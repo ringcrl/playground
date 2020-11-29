@@ -6,7 +6,7 @@ import numpy as np
 
 quote_ctx = OpenQuoteContext(host='127.0.0.1', port=11111)
 
-all_data = []
+dataList = []
 
 ret, data, page_req_key = quote_ctx.request_history_kline(
     'HK.00700',
@@ -19,61 +19,67 @@ if ret == RET_OK:
     for _ in data['low']:
         item = {}
         low = data['low'][index]
+        high = data['high'][index]
         date = data['time_key'][index]
         item['low'] = low
+        item['high'] = high
         item['date'] = date
         item['index'] = index
-        all_data.append(item)
+        dataList.append(item)
         index += 1
 
-# def getAB(x1, y1, x2, y2):
-#   a = (y1 - y2) / (x1 - x2)
-#   b = y1 - a * x1
-#   return a, b
+def getAB(x1, y1, x2, y2):
+  a = (y1 - y2) / (x1 - x2)
+  b = y1 - a * x1
+  return a, b
 
+def getTwoPoint(pointType='high|low'):
+  i = 0
+  j = i + 1
+  resList = []
+  while (i < len(dataList)):
+    while (j < len(dataList)):
+      x1 = dataList[i]['index']
+      y1 = dataList[i][pointType]
+      x2 = dataList[j]['index']
+      y2 = dataList[j][pointType]
+      a, b = getAB(x1, y1, x2, y2)
 
-# def getTwoPoint():
-#   i = 0
-#   j = i + 1
-#   resList = []
-#   while (i < len(all_data)):
-#     while (j < len(all_data)):
-#       x1 = all_data[i]['index']
-#       y1 = all_data[i]['low']
-#       x2 = all_data[j]['index']
-#       y2 = all_data[j]['low']
-#       a, b = getAB(x1, y1, x2, y2)
+      checked_len = 0
+      for item in dataList:
+        if (pointType == 'low' and item['low'] > (a * item['index'] + b)):
+          checked_len += 1
+        elif (pointType == 'high' and item['high'] < (a * item['index'] + b)):
+          checked_len += 1
 
-#       checked_len = 0
-#       for item in all_data:
-#         if item['low'] > (a * item['index'] + b):
-#           checked_len += 1
+      if checked_len == len(dataList) - 2:
+        # 上升趋势只取斜率为正的曲线
+        if a > 0:
+          resList.append({
+            'point1': dataList[i],
+            'point2': dataList[j],
+            'a': a,
+            'b': b
+          })
 
-#       if checked_len == len(all_data) - 2:
-#         resList.append({
-#           'point1': all_data[i],
-#           'point2': all_data[j],
-#           'a': a,
-#           'b': b
-#         })
+      j += 1
+    i += 1
+    j = i + 1
 
-#       j += 1
-#     i += 1
-#     j = i + 1
+  if len(resList) > 0:
+    return resList
+  else:
+    return None
 
-#   if len(resList) > 0:
-#     return resList
-#   else:
-#     return None
+# 不能采用线性拟合，结果不准
+# def linefit():
+#   X = [ item['index'] for item in dataList ]
+#   Y = data['low'].to_list()
+#   z1 = np.polyfit(X, Y, 1) # 一次多项式拟合，相当于线性拟合
+#   p1 = np.poly1d(z1)
+#   print(p1)
 
-def linefit():
-  X = [ item['index'] for item in all_data ]
-  Y = data['low'].to_list()
-  z1 = np.polyfit(X, Y, 1) # 一次多项式拟合，相当于线性拟合
-  p1 = np.poly1d(z1)
-  print(p1)
-
-linefit()
-
+getTwoPoint(pointType='high')
+getTwoPoint(pointType='low')
 
 quote_ctx.close() # 结束后记得关闭当条连接，防止连接条数用尽
