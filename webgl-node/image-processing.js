@@ -1,13 +1,55 @@
-const width = 1080;
-const height = 1920;
-const gl = require('gl')(width, height, { preserveDrawingBuffer: true });
+const canvasWidth = 1080;
+const canvasHeight = 1920;
 const path = require('path');
 const fs = require('fs');
-const glMatrix = require('gl-matrix');
 const Image = require('image-raub');
 const imageOutput = require('image-output');
 const imageEncode = require('image-encode');
 const pxls = require('pxls');
+
+function getGl() {
+  const webgl = require('webgl-raub');
+  const { Document } = require('glfw-raub');
+  Document.setWebgl(webgl); // plug this WebGL impl into the Document
+  const doc = new Document();
+  global.document = doc;
+  global.window = doc;
+
+  const canvas = document.createElement('canvas');
+  document.width = canvasWidth;
+  document.height = canvasHeight;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true });
+  gl.canvas = canvas;
+  return gl;
+}
+
+// function getGl() {
+//   const gl = require('gl')(canvasWidth, canvasHeight, { preserveDrawingBuffer: true });
+//   gl.canvas = {
+//     width: canvasWidth,
+//     height: canvasHeight
+//   }
+//   return gl
+// }
+
+function setRectangle(gl, x, y, width, height) {
+  const x1 = x;
+  const x2 = x + width;
+  const y1 = y;
+  const y2 = y + height;
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    x1, y1,
+    x2, y1,
+    x1, y2,
+    x1, y2,
+    x2, y1,
+    x2, y2,
+  ]), gl.STATIC_DRAW);
+}
+
+const localGl = getGl();
 
 const VS_SOURCE = `
   attribute vec2 a_position;
@@ -50,21 +92,13 @@ const FS_SOURCE = `
 `;
 
 function createProgram(
-  gl, shaders, opt_attribs, opt_locations,
+  gl, shaders,
 ) {
   const program = gl.createProgram();
   shaders.forEach((shader) => {
     gl.attachShader(program, shader);
   });
-  if (opt_attribs) {
-    opt_attribs.forEach((attrib, ndx) => {
-      gl.bindAttribLocation(
-        program,
-        opt_locations ? opt_locations[ndx] : ndx,
-        attrib,
-      );
-    });
-  }
+
   gl.linkProgram(program);
 
   // Check the link status
@@ -99,15 +133,23 @@ function loadShader(gl, shaderSource, shaderType) {
   return shader;
 }
 
-function render(image) {
+function render(gl, image) {
+  console.time('createProgram');
   const shaders = [];
   shaders.push(
     loadShader(gl, VS_SOURCE, gl.VERTEX_SHADER),
     loadShader(gl, FS_SOURCE, gl.FRAGMENT_SHADER),
   );
 
+  let size; // 2 components per iteration
+  let type; // the data is 32bit floats
+  let normalize; // don't normalize the data
+  let stride; // 0 = move forward size * sizeof(type) each iteration to get the next position
+  let offset; // start at the beginning of the buffer
+
   // setup GLSL program
   const program = createProgram(gl, shaders);
+  console.timeEnd('createProgram');
 
   // webglUtils.createProgramFromScripts(gl, ['vertex-shader-2d', 'fragment-shader-2d']);
 
@@ -135,6 +177,7 @@ function render(image) {
     1.0, 1.0,
   ]), gl.STATIC_DRAW);
 
+  console.time('createTexture');
   // Create a texture.
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -147,6 +190,7 @@ function render(image) {
 
   // Upload the image into the texture.
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+  console.timeEnd('createTexture');
 
   // lookup uniforms
   const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
@@ -154,7 +198,7 @@ function render(image) {
   // webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
   // Tell WebGL how to convert from clip space to pixels
-  gl.viewport(0, 0, width, height);
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
   // Clear the canvas
   gl.clearColor(0, 0, 0, 0);
@@ -170,11 +214,11 @@ function render(image) {
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
   // Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-  var size = 2; // 2 components per iteration
-  var type = gl.FLOAT; // the data is 32bit floats
-  var normalize = false; // don't normalize the data
-  var stride = 0; // 0 = move forward size * sizeof(type) each iteration to get the next position
-  var offset = 0; // start at the beginning of the buffer
+  size = 2; // 2 components per iteration
+  type = gl.FLOAT; // the data is 32bit floats
+  normalize = false; // don't normalize the data
+  stride = 0; // 0 = move forward size * sizeof(type) each iteration to get the next position
+  offset = 0; // start at the beginning of the buffer
   gl.vertexAttribPointer(
     positionLocation, size, type, normalize, stride, offset,
   );
@@ -186,43 +230,28 @@ function render(image) {
   gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
 
   // Tell the texcoord attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
-  var size = 2; // 2 components per iteration
-  var type = gl.FLOAT; // the data is 32bit floats
-  var normalize = false; // don't normalize the data
-  var stride = 0; // 0 = move forward size * sizeof(type) each iteration to get the next position
-  var offset = 0; // start at the beginning of the buffer
+  size = 2; // 2 components per iteration
+  type = gl.FLOAT; // the data is 32bit floats
+  normalize = false; // don't normalize the data
+  stride = 0; // 0 = move forward size * sizeof(type) each iteration to get the next position
+  offset = 0; // start at the beginning of the buffer
   gl.vertexAttribPointer(
     texcoordLocation, size, type, normalize, stride, offset,
   );
 
   // set the resolution
-  gl.uniform2f(resolutionLocation, width, height);
+  gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
 
   // Draw the rectangle.
   const primitiveType = gl.TRIANGLES;
-  var offset = 0;
+  offset = 0;
   const count = 6;
   gl.drawArrays(primitiveType, offset, count);
 }
 
-function setRectangle(gl, x, y, width, height) {
-  const x1 = x;
-  const x2 = x + width;
-  const y1 = y;
-  const y2 = y + height;
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    x1, y1,
-    x2, y1,
-    x1, y2,
-    x1, y2,
-    x2, y1,
-    x2, y2,
-  ]), gl.STATIC_DRAW);
-}
-
-async function readPixelsAndWriteFile() {
-  const pixels = new Uint8Array(width * height * 4);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+async function readPixelsAndWriteFile(gl) {
+  const pixels = new Uint8Array(gl.canvas.width * gl.canvas.height * 4);
+  gl.readPixels(0, 0, gl.canvas.width, gl.canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
   const outputPath = path.resolve(__dirname, './test.png');
 
@@ -235,8 +264,8 @@ async function readPixelsAndWriteFile() {
   const res = {};
   imageOutput({
     data: pixels,
-    width,
-    height,
+    width: gl.canvas.width,
+    height: gl.canvas.height,
   }, res);
 
   const pixelsImage = pxls(res, [res.width, res.height]);
@@ -249,9 +278,9 @@ async function readPixelsAndWriteFile() {
   };
 
   const outputBuffer = Buffer.from(imageEncode(pixelsImage, encodeObj));
-  return outputBuffer;
+  // return outputBuffer;
 
-  // fs.writeFileSync(outputPath, outputBuffer);
+  fs.writeFileSync(outputPath, outputBuffer);
 }
 
 function main() {
@@ -261,10 +290,10 @@ function main() {
   image.onload = () => {
     console.timeEnd('image-load');
     console.time('render');
-    render(image);
+    render(localGl, image);
     console.timeEnd('render');
     console.time('writeFile');
-    readPixelsAndWriteFile();
+    readPixelsAndWriteFile(localGl);
     console.timeEnd('writeFile');
   };
 }

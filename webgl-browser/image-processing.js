@@ -1,22 +1,32 @@
-function main() {
-  const image = new Image();
-  image.src = './01.jpg'; // MUST BE SAME DOMAIN!!!
-  image.onload = function () {
-    render(image);
-  };
-}
-
-function render(image) {
-  // Get A WebGL context
-  /** @type {HTMLCanvasElement} */
+function getGl() {
   const canvas = document.querySelector('#canvas');
   const gl = canvas.getContext('webgl');
-  if (!gl) {
-    return;
-  }
+  return gl;
+}
 
+function setRectangle(gl, x, y, width, height) {
+  const x1 = x;
+  const x2 = x + width;
+  const y1 = y;
+  const y2 = y + height;
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    x1, y1,
+    x2, y1,
+    x1, y2,
+    x1, y2,
+    x2, y1,
+    x2, y2,
+  ]), gl.STATIC_DRAW);
+}
+
+function render(gl, image) {
+  // Get A WebGL context
+  /** @type {HTMLCanvasElement} */
+
+  console.time('initProgram');
   // setup GLSL program
   const program = webglUtils.createProgramFromScripts(gl, ['vertex-shader-2d', 'fragment-shader-2d']);
+  console.timeEnd('initProgram');
 
   // look up where the vertex data needs to go.
   const positionLocation = gl.getAttribLocation(program, 'a_position');
@@ -112,19 +122,19 @@ function render(image) {
   gl.drawArrays(primitiveType, offset, count);
 }
 
-function setRectangle(gl, x, y, width, height) {
-  const x1 = x;
-  const x2 = x + width;
-  const y1 = y;
-  const y2 = y + height;
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    x1, y1,
-    x2, y1,
-    x1, y2,
-    x1, y2,
-    x2, y1,
-    x2, y2,
-  ]), gl.STATIC_DRAW);
+function main() {
+  console.time('getGl');
+  const localGl = getGl();
+  console.timeEnd('getGl');
+  console.time('loadImage');
+  const image = new Image();
+  image.src = './01.jpg'; // MUST BE SAME DOMAIN!!!
+  image.onload = function () {
+    console.timeEnd('loadImage');
+    console.time('render');
+    render(localGl, image);
+    console.timeEnd('render');
+  };
 }
 
 main();
