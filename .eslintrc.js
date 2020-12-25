@@ -9,5 +9,7 @@ module.exports = {
   ],
   rules: {
     'global-require': 0,
+    'no-console': 0,
+    'no-plusplus': 0,
   },
 };

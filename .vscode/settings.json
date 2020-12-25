@@ -1,3 +1,10 @@
 {
   "python.pythonPath": "/Users/ringcrl/.pyenv/versions/3.8.2/bin/python",
+  "files.associations": {
+    "*.cjson": "jsonc",
+    "*.wxss": "css",
+    "*.wxs": "javascript",
+    "ios": "cpp",
+    "random": "cpp"
+  },
 }
