@@ -9,5 +9,17 @@
       "cwd": "${workspaceFolder}",
       "outputCapture" : "std"
     },
+    {
+      "name": "TS-NODE",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${file}"
+      ]
+    }
   ]
 }
