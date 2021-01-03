@@ -13,5 +13,8 @@ module.exports = {
     'no-plusplus': 0,
     'no-use-before-define': 0,
     'no-alert': 0,
+    camelcase: 0,
+    'no-param-reassign': 0,
+    'no-shadow': 0,
   },
 };

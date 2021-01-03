@@ -7,4 +7,5 @@
     "ios": "cpp",
     "random": "cpp"
   },
+  "liveServer.settings.port": 5501,
 }
