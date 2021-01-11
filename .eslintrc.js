@@ -16,5 +16,7 @@ module.exports = {
     camelcase: 0,
     'no-param-reassign': 0,
     'no-shadow': 0,
+    'func-names': 0,
+    'import/extensions': 0,
   },
 };
