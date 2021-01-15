@@ -1,3 +1,5 @@
 node_modules
 **/output/*
 !**/output/.gitkeep
+**/_test/*
+!**/_test/.gitkeep
