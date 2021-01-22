@@ -6,7 +6,12 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
+    'airbnb-typescript/base',
   ],
+  parserOptions: {
+    createDefaultProgram: true,
+    project: './tsconfig.json',
+  },
   rules: {
     'global-require': 0,
     'no-console': 0,
@@ -18,5 +23,8 @@ module.exports = {
     'no-shadow': 0,
     'func-names': 0,
     'import/extensions': 0,
+    'no-restricted-syntax': 0,
+    'no-loop-func': 0,
+    'import/no-dynamic-require': 0,
   },
 };
