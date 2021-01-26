@@ -26,5 +26,6 @@ module.exports = {
     'no-restricted-syntax': 0,
     'no-loop-func': 0,
     'import/no-dynamic-require': 0,
+    '@typescript-eslint/no-loop-func': 0,
   },
 };
