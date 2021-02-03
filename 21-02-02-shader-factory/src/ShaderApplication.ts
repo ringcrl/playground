@@ -70,9 +70,9 @@ export default class ShaderApplication extends Application {
       backgroundColor: 0x000000,
     });
 
-    settings.PRECISION_FRAGMENT = PRECISION.HIGH;
-
     this.containerEl = containerEl;
+
+    settings.PRECISION_FRAGMENT = PRECISION.HIGH;
 
     this.initWidth = initWidth;
     this.initHeight = initHeight;

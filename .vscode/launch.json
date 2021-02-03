@@ -10,7 +10,7 @@
       "outputCapture" : "std"
     },
     {
-      "name": "TS-NODE",
+      "name": "TS",
       "type": "node",
       "request": "launch",
       "runtimeArgs": [

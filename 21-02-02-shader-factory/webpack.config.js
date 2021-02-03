@@ -1,10 +1,10 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
-  mode: 'development',
+const webpackConfig = {
   entry: './src/main.ts',
-  devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {
@@ -15,7 +15,7 @@ module.exports = {
       {
         test: /\.css$/i,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           'css-loader',
         ],
       },
@@ -40,10 +40,25 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: './bundle.js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './index.html' }),
+    new MiniCssExtractPlugin(),
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      extractComments: false,
+    })],
+  },
 };
+
+if (process.env.NODE_ENV === 'devlopment') {
+  Object.assign(webpackConfig, {
+    devtool: 'cheap-module-source-map',
+  });
+}
+
+module.exports = webpackConfig;
