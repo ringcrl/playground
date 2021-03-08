@@ -29,5 +29,7 @@ module.exports = {
     '@typescript-eslint/no-loop-func': 0,
     'import/prefer-default-export': 0,
     'no-underscore-dangle': 0,
+    'no-new': 0,
+    'class-methods-use-this': 0,
   },
 };
