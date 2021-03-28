@@ -3,3 +3,4 @@ node_modules
 !**/output/.gitkeep
 **/_test/*
 !**/_test/.gitkeep
+.env
