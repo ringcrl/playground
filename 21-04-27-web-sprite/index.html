@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>web-sprite</title>
+    <style>
+      .sprite-wrapper {
+        background-image: url(./assets/sprite-vertrical.png), url(./assets/sprite-vertrical.png),
+          url(./assets/sprite-vertrical.png);
+        background-repeat: no-repeat;
+
+        /* 原始尺寸 */
+        /* background-size: 100px;
+        background-position: 0px 0px, 100px -93px, 200px -186px;
+        height: 100px; */
+
+        /* 1.5X 高度 */
+        background-size: 150px;
+        background-position: 0px 0px, 150px -139.5px, 300px -279px;
+        height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sprite-wrapper"></div>
+  </body>
+</html>
