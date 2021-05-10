@@ -8,4 +8,5 @@
     "random": "cpp"
   },
   "liveServer.settings.port": 5501,
+  "python.linting.pylintEnabled": true,
 }
