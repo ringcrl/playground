@@ -12,6 +12,9 @@ module.exports = {
     createDefaultProgram: true,
     project: './tsconfig.json',
   },
+  globals: {
+    PIXI: true,
+  },
   rules: {
     'global-require': 0,
     'no-console': 0,
