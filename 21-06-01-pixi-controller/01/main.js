@@ -4,16 +4,16 @@ document.body.appendChild(app.view);
 const PIC_RATIO = 9 / 16;
 const PIC_WIDTH = 300;
 const PIC_HEIGHT = PIC_WIDTH / PIC_RATIO;
+const CONTROLLER_LEFT = 250;
+const CONTROLLER_TOP = 30;
+const LINE_WIDTH = 2000;
 const INTENSITY_MAX = 100;
 const INTENSITY_MIN = 30;
 const BUTTON_GAP = 30;
-const LINE_WIDTH = 2000;
-const CONTROLLER_LEFT = 250;
-const CONTROLLER_TOP = 30;
 
 const container = new PIXI.Container();
 
-// 用于包裹精灵图
+// 用于包裹精灵图，实现控件移动边界条件判断
 const controllerWrapper = new PIXI.Container();
 controllerWrapper.interactive = true;
 controllerWrapper.buttonMode = true;
@@ -25,6 +25,7 @@ controllerWrapper._right = CONTROLLER_LEFT + PIC_WIDTH;
 controllerWrapper._top = CONTROLLER_TOP;
 controllerWrapper._bottom = CONTROLLER_TOP + PIC_HEIGHT;
 
+// 用于包裹控件，控件统一移动
 const controller = new PIXI.Container();
 controller.interactive = true;
 controller.buttonMode = true;
@@ -35,7 +36,7 @@ const lineBar = new PIXI.Graphics()
   .beginFill(0xffffff)
   .drawRect(0, 0, LINE_WIDTH, 3)
   .endFill();
-lineBar.position.set(-1000, 0);
+lineBar.position.set(-LINE_WIDTH / 2, 0);
 lineBar.interactive = true;
 lineBar.addListener('pointerdown', onLineBarDragStart);
 lineBar.addListener('pointerup', onLineBarDragEnd);
@@ -123,7 +124,7 @@ function onRotateBtnDragMove(e) {
 }
 controller.addChild(rotateBtn);
 
-const sprite = PIXI.Sprite.from('./vertical.jpg');
+const sprite = PIXI.Sprite.from('../../assets/imgs/vertical.jpg');
 sprite.width = PIC_WIDTH;
 sprite.height = PIC_HEIGHT;
 sprite.x = CONTROLLER_LEFT;
