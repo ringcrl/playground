@@ -4,3 +4,4 @@ node_modules
 **/_test/*
 !**/_test/.gitkeep
 .env
+*.csv
