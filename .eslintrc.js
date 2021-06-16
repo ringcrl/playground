@@ -38,5 +38,6 @@ module.exports = {
     'max-len': 0,
     '@typescript-eslint/no-shadow': 0,
     'no-await-in-loop': 0,
+    'no-continue': 0,
   },
 };
