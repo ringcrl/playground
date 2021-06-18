@@ -41,5 +41,6 @@ module.exports = {
     'no-await-in-loop': 0,
     'no-continue': 0,
     'no-async-promise-executor': 0,
+    'no-mixed-operators': 0,
   },
 };

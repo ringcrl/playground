@@ -6,6 +6,7 @@ const glob = require('glob');
 const jimp = require('jimp');
 const { PNG } = require('pngjs');
 const pixelmatch = require('pixelmatch');
+const os = require('os');
 
 const EXPORT_WIDTH = 1920;
 const EXPORT_HEIGHT = 1080;
@@ -14,10 +15,12 @@ const framesVideo1Dir = path.resolve(__dirname, 'cache/framesVideo1');
 const framesVideo2Dir = path.resolve(__dirname, 'cache/framesVideo2');
 const framesDiffDir = path.resolve(__dirname, 'cache/framesDiff');
 const diffVideoOutputPath = path.resolve(__dirname, 'cache/output.mp4');
+const reportTxtPath = path.resolve(__dirname, 'cache/report.txt');
 
 cp.execSync(`rm -rf ${framesVideo1Dir}`);
 cp.execSync(`rm -rf ${framesVideo2Dir}`);
 cp.execSync(`rm -rf ${framesDiffDir}`);
+cp.execSync(`rm -rf ${reportTxtPath}`);
 cp.execSync(`mkdir ${framesVideo1Dir}`);
 cp.execSync(`mkdir ${framesVideo2Dir}`);
 cp.execSync(`mkdir ${framesDiffDir}`);
@@ -75,18 +78,23 @@ async function generateDiffFrames(framesVideo1Dir, framesVideo2Dir, framesDiffDi
       if (!actualFilePath) {
         return resolve();
       }
-      const actualImg = (await jimp.read(fs.readFileSync(expectedFilePath))).bitmap;
+      const actualImg = (await jimp.read(fs.readFileSync(actualFilePath))).bitmap;
 
       const { width, height } = expectedImg;
       const diff = new PNG({ width, height });
 
-      pixelmatch(expectedImg.data, actualImg.data, diff.data, width, height, {
-        threshold: 0.1,
+      const diffPixelCount = pixelmatch(expectedImg.data, actualImg.data, diff.data, width, height, {
+        threshold: 0.5,
         includeAA: true,
         alpha: 0.5,
+        diffMask: false, // 背景是否空白
       });
 
       const fileName = `0000000000${i}`.slice(-8);
+
+      const diffPixelPercent = `${diffPixelCount / (width * height) * 100}%`;
+      fs.appendFileSync(reportTxtPath, `${fileName} ${diffPixelPercent}${os.EOL}`);
+
       fs.writeFileSync(`${framesDiffDir}/${fileName}.png`, PNG.sync.write(diff));
       i += 1;
     }
