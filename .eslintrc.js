@@ -15,6 +15,7 @@ module.exports = {
   globals: {
     PIXI: true,
   },
+  ignorePatterns: ['**/libs/*.js'],
   rules: {
     'global-require': 0,
     'no-console': 0,
@@ -39,5 +40,6 @@ module.exports = {
     '@typescript-eslint/no-shadow': 0,
     'no-await-in-loop': 0,
     'no-continue': 0,
+    'no-async-promise-executor': 0,
   },
 };
