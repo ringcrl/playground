@@ -42,5 +42,6 @@ module.exports = {
     'no-continue': 0,
     'no-async-promise-executor': 0,
     'no-mixed-operators': 0,
+    'consistent-return': 0,
   },
 };

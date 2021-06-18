@@ -7,6 +7,8 @@ const jimp = require('jimp');
 const { PNG } = require('pngjs');
 const pixelmatch = require('pixelmatch');
 const os = require('os');
+const request = require('request');
+const isUrl = require('validator/lib/isURL');
 
 const EXPORT_WIDTH = 1920;
 const EXPORT_HEIGHT = 1080;
@@ -16,16 +18,23 @@ const framesVideo2Dir = path.resolve(__dirname, 'cache/framesVideo2');
 const framesDiffDir = path.resolve(__dirname, 'cache/framesDiff');
 const diffVideoOutputPath = path.resolve(__dirname, 'cache/output.mp4');
 const reportTxtPath = path.resolve(__dirname, 'cache/report.txt');
+const downloadPath = path.resolve(__dirname, 'cache/download');
 
 cp.execSync(`rm -rf ${framesVideo1Dir}`);
 cp.execSync(`rm -rf ${framesVideo2Dir}`);
 cp.execSync(`rm -rf ${framesDiffDir}`);
 cp.execSync(`rm -rf ${reportTxtPath}`);
-cp.execSync(`mkdir ${framesVideo1Dir}`);
-cp.execSync(`mkdir ${framesVideo2Dir}`);
-cp.execSync(`mkdir ${framesDiffDir}`);
+cp.execSync(`rm -rf ${downloadPath}`);
+cp.execSync(`mkdir -p ${framesVideo1Dir}`);
+cp.execSync(`mkdir -p ${framesVideo2Dir}`);
+cp.execSync(`mkdir -p ${framesDiffDir}`);
+cp.execSync(`mkdir -p ${downloadPath}`);
 
 async function videoDiff(video1Path, video2Path) {
+  console.log('正在处理 uri...');
+  video1Path = await handlePath(video1Path);
+  video2Path = await handlePath(video2Path);
+
   console.log('正在对两段视频进行抽帧...');
   const promiseVideo1 = extractFramesFromVideo(video1Path, framesVideo1Dir);
   const promiseVideo2 = extractFramesFromVideo(video2Path, framesVideo2Dir);
@@ -39,6 +48,24 @@ async function videoDiff(video1Path, video2Path) {
   await combineFramesToVideo(framesDiffDir, diffVideoOutputPath);
 
   console.log('处理完成，查看 output.mp4');
+}
+
+async function handlePath(uri) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (!isUrl(uri)) {
+        return resolve(uri);
+      }
+
+      const postfix = uri.split('.').pop().toLowerCase();
+      const fileName = `${Date.now()}.${postfix}`;
+      const filePath = path.resolve(downloadPath, fileName);
+      const stream = fs.createWriteStream(filePath);
+      request(uri).pipe(stream).on('close', () => resolve(filePath)).on('error', (err) => reject(err));
+    } catch (err) {
+      reject(err);
+    }
+  });
 }
 
 async function extractFramesFromVideo(videoPath, distDir) {
