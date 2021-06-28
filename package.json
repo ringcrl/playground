@@ -4,7 +4,7 @@
   "description": "静态网页托管：`https://ringcrl.github.io/playground/<path>`",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf ./_test/*"
   },
   "repository": {
     "type": "git",
