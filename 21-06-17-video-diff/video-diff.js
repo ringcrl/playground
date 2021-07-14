@@ -1,3 +1,6 @@
+// 比对两个视频差异，生成比对文本和比对视频
+// node ./video-diff -v1=path_to_video_1 -v2=path_to_video_2
+
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const path = require('path');
@@ -9,16 +12,19 @@ const pixelmatch = require('pixelmatch');
 const os = require('os');
 const request = require('request');
 const isUrl = require('validator/lib/isURL');
+const argv = require('minimist')(process.argv.slice(2));
 
-const EXPORT_WIDTH = 1920;
-const EXPORT_HEIGHT = 1080;
+const { v1, v2 } = argv;
 
-const framesVideo1Dir = path.resolve(__dirname, 'cache/framesVideo1');
-const framesVideo2Dir = path.resolve(__dirname, 'cache/framesVideo2');
-const framesDiffDir = path.resolve(__dirname, 'cache/framesDiff');
-const diffVideoOutputPath = path.resolve(__dirname, 'cache/output.mp4');
-const reportTxtPath = path.resolve(__dirname, 'cache/report.txt');
-const downloadPath = path.resolve(__dirname, 'cache/download');
+let exportWidth = 0;
+let exportHeight = 0;
+
+const framesVideo1Dir = path.resolve(__dirname, './cache/framesVideo1');
+const framesVideo2Dir = path.resolve(__dirname, './cache/framesVideo2');
+const framesDiffDir = path.resolve(__dirname, './cache/framesDiff');
+const diffVideoOutputPath = path.resolve(__dirname, '.cache/diff.mp4');
+const reportTxtPath = path.resolve(__dirname, './cache/report.txt');
+const downloadPath = path.resolve(__dirname, './cache/download');
 
 cp.execSync(`rm -rf ${framesVideo1Dir}`);
 cp.execSync(`rm -rf ${framesVideo2Dir}`);
@@ -91,7 +97,7 @@ async function extractFramesFromVideo(videoPath, distDir) {
 }
 
 async function generateDiffFrames(framesVideo1Dir, framesVideo2Dir, framesDiffDir) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     const dir1Items = glob.sync(`${framesVideo1Dir}/**`);
     const dir1Files = dir1Items.filter((file) => fs.statSync(file).isFile());
 
@@ -108,6 +114,12 @@ async function generateDiffFrames(framesVideo1Dir, framesVideo2Dir, framesDiffDi
       const actualImg = (await jimp.read(fs.readFileSync(actualFilePath))).bitmap;
 
       const { width, height } = expectedImg;
+
+      if (width !== exportWidth || height !== exportHeight) {
+        exportWidth = width;
+        exportHeight = height;
+      }
+
       const diff = new PNG({ width, height });
 
       const diffPixelCount = pixelmatch(expectedImg.data, actualImg.data, diff.data, width, height, {
@@ -143,7 +155,7 @@ async function combineFramesToVideo(framesDir, outputPath) {
         '-pixel_format',
         'rgba',
         '-video_size',
-        `${EXPORT_WIDTH}x${EXPORT_HEIGHT}`,
+        `${exportWidth}x${exportHeight}`,
       ])
       .outputOptions([
         '-hide_banner',
@@ -156,7 +168,7 @@ async function combineFramesToVideo(framesDir, outputPath) {
         '-profile:v',
         'main',
         '-preset',
-        'medium',
+        'ultrafast',
         '-crf',
         '20',
         '-movflags',
@@ -181,5 +193,5 @@ async function combineFramesToVideo(framesDir, outputPath) {
 }
 
 (async () => {
-  videoDiff('/Users/ringcrl/Desktop/origin.mp4', '/Users/ringcrl/Desktop/new.mp4');
+  videoDiff(v1, v2);
 })();
