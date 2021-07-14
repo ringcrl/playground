@@ -132,6 +132,7 @@ async function generateDiffFrames(framesVideo1Dir, framesVideo2Dir, framesDiffDi
 
 async function combineFramesToVideo(framesDir, outputPath) {
   return new Promise((resolve, reject) => {
+    // ffmpeg -i ./framesDiff/%08d.png -framerate 25 -pixel_format rgba -video_size 1280x720 -hide_banner -map_metadata -1 -map_chapters -1 -c:v libx264 -profile:v main -preset medium -crf 20 -movflags faststart -pix_fmt yuv420p -r 24
     ffmpeg()
       .addInput(`${framesDir}/%08d.png`)
       .inputOptions([
