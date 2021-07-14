@@ -1,5 +1,5 @@
 // 比对两个视频差异，生成比对文本和比对视频
-// node ./video-diff -v1=path_to_video_1 -v2=path_to_video_2
+// node ./video-diff --v1=path_to_video_1 --v2=path_to_video_2
 
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
@@ -22,7 +22,7 @@ let exportHeight = 0;
 const framesVideo1Dir = path.resolve(__dirname, './cache/framesVideo1');
 const framesVideo2Dir = path.resolve(__dirname, './cache/framesVideo2');
 const framesDiffDir = path.resolve(__dirname, './cache/framesDiff');
-const diffVideoOutputPath = path.resolve(__dirname, '.cache/diff.mp4');
+const diffVideoOutputPath = path.resolve(__dirname, './cache/diff.mp4');
 const reportTxtPath = path.resolve(__dirname, './cache/report.txt');
 const downloadPath = path.resolve(__dirname, './cache/download');
 
@@ -105,6 +105,7 @@ async function generateDiffFrames(framesVideo1Dir, framesVideo2Dir, framesDiffDi
     const dir2Files = dir2Items.filter((file) => fs.statSync(file).isFile());
 
     let i = 0;
+    let diffPercentCount = 0;
     for (const expectedFilePath of dir1Files) {
       const expectedImg = (await jimp.read(fs.readFileSync(expectedFilePath))).bitmap;
       const actualFilePath = dir2Files[i];
@@ -131,12 +132,16 @@ async function generateDiffFrames(framesVideo1Dir, framesVideo2Dir, framesDiffDi
 
       const fileName = `0000000000${i}`.slice(-8);
 
-      const diffPixelPercent = `${diffPixelCount / (width * height) * 100}%`;
+      const diffPercent = diffPixelCount / width / height * 100;
+      diffPercentCount += diffPercent;
+      const diffPixelPercent = `${diffPercent}%`;
       fs.appendFileSync(reportTxtPath, `${fileName} ${diffPixelPercent}${os.EOL}`);
 
       fs.writeFileSync(`${framesDiffDir}/${fileName}.png`, PNG.sync.write(diff));
       i += 1;
     }
+
+    console.log('平均diff percent', diffPercentCount / i);
 
     resolve();
   });
@@ -193,5 +198,7 @@ async function combineFramesToVideo(framesDir, outputPath) {
 }
 
 (async () => {
+  // const video1 = '/Users/ringcrl/Documents/saga/playground/21-06-17-video-diff/2f21eae0c062c0a960a61966.mp4';
+  // const video2 = '/Users/ringcrl/Documents/saga/playground/21-06-17-video-diff/e20a3c7efb223c56ac22e933.mp4';
   videoDiff(v1, v2);
 })();
