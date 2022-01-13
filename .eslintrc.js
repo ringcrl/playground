@@ -43,5 +43,6 @@ module.exports = {
     'no-async-promise-executor': 0,
     'no-mixed-operators': 0,
     'consistent-return': 0,
+    'no-bitwise': 0,
   },
 };
