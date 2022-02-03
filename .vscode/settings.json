@@ -6,7 +6,9 @@
     "*.wxs": "javascript",
     "ios": "cpp",
     "random": "cpp",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "iostream": "cpp",
+    "ostream": "cpp"
   },
   "liveServer.settings.port": 5501,
   "python.linting.pylintEnabled": true,
