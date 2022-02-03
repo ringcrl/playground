@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes</title>
+    <script src="./libs/vue.js"></script>
+    <script src="./libs/axios.js"></script>
+    <!-- https://bulma.io/documentation/overview/start/ -->
+    <link rel="stylesheet" href="./libs/bulma.css" />
+  </head>
+  <body>
+    <div id="app" style="padding: 15px">
+      <textarea
+        class="textarea block"
+        v-model="inputContent"
+        cols="20"
+        rows="5"
+        style="resize: none"
+      ></textarea>
+      <button class="button block is-primary" @click="addContent">提交</button>
+      <div class="block">
+        <button class="button" @click="updateIndex">随机一条</button>
+        <button class="button" @click="toggleView">切换视图</button>
+      </div>
+      <div v-if="view === 'content'" class="card">
+        <div class="card-content">
+          <div class="content" style="white-space: pre-wrap">{{ currContent }}</div>
+        </div>
+      </div>
+      <div v-if="view === 'list'">
+        <ul>
+          <li v-for="item in contentList">
+            <button class="button is-small" @click="deleteItem(item)">
+              删除
+            </button>
+            {{item.content}}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>

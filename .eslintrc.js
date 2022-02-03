@@ -14,6 +14,8 @@ module.exports = {
   },
   globals: {
     PIXI: true,
+    Vue: true,
+    axios: true,
   },
   ignorePatterns: ['**/libs/*.js'],
   rules: {
