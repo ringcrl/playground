@@ -38,14 +38,6 @@ new Vue({
         this.view = 'content';
       }
     },
-    deleteItem(item) {
-      this.delContent(item.id);
-    },
-  },
-  computed: {
-    currContent() {
-      return this.contentList[this.currContentIndex]?.content || '';
-    },
   },
   mounted() {
     this.updateList();
