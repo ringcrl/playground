@@ -7,7 +7,7 @@ const ffmpeg = createFFmpeg({
   },
 });
 
-const transcode = async ({ target: { files }  }) => {
+const transcode = async ({ target: { files } }) => {
   const { name } = files[0];
   message.innerHTML = 'Loading ffmpeg-core.js';
   await ffmpeg.load();
@@ -16,8 +16,8 @@ const transcode = async ({ target: { files }  }) => {
   await ffmpeg.run('-i', name, '-vf', 'scale=480:-1', 'output.mp4');
   message.innerHTML = 'Complete transcoding';
   const data = ffmpeg.FS('readFile', 'output.mp4');
- 
+
   const video = document.getElementById('output-video');
   video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-}
+};
 document.getElementById('uploader').addEventListener('change', transcode);
