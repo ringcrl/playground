@@ -17,24 +17,36 @@ app.use(bodyParser());
   });
 
   router
-    .get('/get', async (ctx) => {
-      const result = await db.all('SELECT * FROM NOTES');
+    .post('/get', async (ctx) => {
+      const { type } = ctx.request.body;
+      let sql = 'SELECT * FROM t_notes';
+      if (type) {
+        sql = `SELECT * FROM t_notes WHERE type='${type}'`;
+      }
+      const result = await db.all(sql);
       ctx.body = result;
     })
     .post('/add', async (ctx) => {
-      const { content } = ctx.request.body;
-      await db.run(`INSERT INTO NOTES VALUES (NULL, '${content}')`);
+      const { type, question, answer } = ctx.request.body;
+      await db.run(`INSERT INTO t_notes VALUES (NULL, '${question}', '${answer}', '${type}')`);
+      ctx.body = { status: 'ok' };
+    })
+    .post('/set', async (ctx) => {
+      const {
+        question, answer, type, id,
+      } = ctx.request.body;
+      await db.run(`UPDATE t_notes SET question='${question}', answer='${answer}', type='${type}' WHERE id=${id}`);
       ctx.body = { status: 'ok' };
     })
     .post('/del', async (ctx) => {
       const { id } = ctx.request.body;
-      await db.run('DELETE FROM NOTES WHERE id = ?', id);
+      await db.run('DELETE FROM t_notes WHERE id = ?', id);
       ctx.body = { status: 'ok' };
     });
 
-  console.log('http://127.0.0.1:3000');
+  console.log('http://127.0.0.1:9999');
   app
     .use(router.routes())
     .use(router.allowedMethods())
-    .listen(3000);
+    .listen(9999);
 })();

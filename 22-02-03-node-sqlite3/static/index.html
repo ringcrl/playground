@@ -12,33 +12,142 @@
   </head>
   <body>
     <div id="app" style="padding: 15px">
-      <textarea
-        class="textarea block"
-        v-model="inputContent"
-        cols="20"
-        rows="5"
-        style="resize: none"
-      ></textarea>
-      <button class="button block is-primary" @click="addContent">提交</button>
-      <div class="block">
-        <button class="button" @click="updateIndex">随机一条</button>
-        <button class="button" @click="toggleView">切换视图</button>
-      </div>
-      <div v-if="view === 'content'" class="card">
-        <div class="card-content">
-          <div class="content" style="white-space: pre-wrap">{{ contentList[currContentIndex]?.content }}</div>
+      <div class="block box">
+        <div class="block" style="display: flex; align-items: center">
+          <span style="margin-right: 10px">类型</span>
+          <div style="margin-right: 10px" class="select is-small">
+            <select v-model="type">
+              <option v-for="option in options" :key="option">
+                {{option}}
+              </option>
+            </select>
+          </div>
+          <button class="button block is-info is-small" @click="addContent">
+            新建
+          </button>
         </div>
-        <footer class="card-footer">
-          <a @click="delContent(contentList[currContentIndex]?.id)" class="card-footer-item">删除</a>
-        </footer>
+        <div class="columns">
+          <div class="column">
+            <p>问题</p>
+            <textarea
+              class="textarea block question"
+              v-model="question"
+              cols="20"
+              rows="5"
+              style="resize: none"
+            ></textarea>
+          </div>
+          <div class="column">
+            <p>答案</p>
+            <textarea
+              class="textarea block answer"
+              v-model="answer"
+              cols="20"
+              rows="5"
+              style="resize: none"
+            ></textarea>
+          </div>
+        </div>
       </div>
-      <div v-if="view === 'list'">
+
+      <div class="block box" style="display: flex">
+        <div style="display: flex; align-items: center">
+          <span style="margin-right: 10px">筛选类型</span>
+          <div style="margin-right: 10px" class="select is-small">
+            <select v-model="filterType">
+              <option v-for="option in options" :key="option">
+                {{option}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <button
+          style="margin-right: 10px"
+          class="button is-small is-info"
+          @click="updateIndex"
+        >
+          随机一条
+        </button>
+        <button class="button is-small is-link" @click="toggleView">
+          切换视图
+        </button>
+      </div>
+      <div class="box" v-if="view === 'content' && newQuestion">
+        <div class="block" style="display: flex; align-items: center">
+          <span style="margin-right: 10px">类型</span>
+          <div style="margin-right: 10px" class="select is-small">
+            <select v-model="newType">
+              <option v-for="option in options" :key="option">
+                {{option}}
+              </option>
+            </select>
+          </div>
+          <button
+            style="margin-right: 10px"
+            class="button is-info is-small"
+            @click="setContent(contentList[currContentIndex]?.id)"
+          >
+            更新
+          </button>
+          <button
+            style="margin-right: 10px"
+            class="button is-danger is-small"
+            @click="delContent(contentList[currContentIndex]?.id)"
+          >
+            删除
+          </button>
+        </div>
+        <div class="block columns">
+          <div class="column">
+            <p>问题</p>
+            <textarea
+              class="textarea block question"
+              v-model="newQuestion"
+              cols="20"
+              rows="5"
+              style="resize: none"
+            ></textarea>
+          </div>
+          <div class="column">
+            <p style="cursor: pointer" @click="isShowAnswer = !isShowAnswer">
+              答案(点击显隐)
+            </p>
+            <textarea
+              v-if="isShowAnswer"
+              class="textarea block answer"
+              v-model="newAnswer"
+              cols="20"
+              rows="5"
+              style="resize: none"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="box" v-if="view === 'list'">
         <ul>
-          <li v-for="item in contentList" style="display: flex; align-items: center; margin-top: 10px;">
-            <button class="button is-small" style="margin-right: 5px;" @click="delContent(item.id)">
+          <li
+            v-for="(item, index) in contentList"
+            style="display: flex; align-items: center; margin-top: 10px"
+          >
+            <button
+              class="button is-small is-danger"
+              style="margin-right: 10px"
+              @click="delContent(item.id)"
+            >
               删除
             </button>
-            <p style="width: 80%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">{{item.content}}</p>
+            <p
+              style="
+                width: 80%;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                cursor: pointer;
+              "
+              @click="onListItemClick(index)"
+            >
+              {{item.question}}
+            </p>
           </li>
         </ul>
       </div>
