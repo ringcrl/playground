@@ -55,6 +55,7 @@ new Vue({
       }
       await axios.post('/add', {
         question: this.question,
+        answer: this.answer,
         type: this.type,
       });
       this.question = '';
