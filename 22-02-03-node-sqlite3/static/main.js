@@ -75,7 +75,6 @@ new Vue({
         answer: this.newAnswer,
         type: this.newType,
       });
-      this.updateList();
     },
     toggleView() {
       if (this.view === 'content') {
