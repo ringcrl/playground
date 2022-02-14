@@ -66,7 +66,9 @@ new Vue({
       await axios.post('/del', {
         id,
       });
-      this.updateList();
+      this.contentList = this.contentList.filter((item) => item.id !== id);
+      this.indexPool.pop();
+      this.updateIndex();
     },
     async setContent(id) {
       await axios.post('/set', {
