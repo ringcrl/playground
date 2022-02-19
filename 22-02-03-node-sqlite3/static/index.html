@@ -13,19 +13,6 @@
   <body>
     <div id="app" style="padding: 15px">
       <div class="block box">
-        <div class="block" style="display: flex; align-items: center">
-          <span style="margin-right: 10px">类型</span>
-          <div style="margin-right: 10px" class="select is-small">
-            <select v-model="type">
-              <option v-for="option in options" :key="option">
-                {{option}}
-              </option>
-            </select>
-          </div>
-          <button class="button block is-info is-small" @click="addContent">
-            新建
-          </button>
-        </div>
         <div class="columns">
           <div class="column">
             <p>问题</p>
@@ -48,31 +35,74 @@
             ></textarea>
           </div>
         </div>
-      </div>
-
-      <div class="block box" style="display: flex">
-        <div style="display: flex; align-items: center">
-          <span style="margin-right: 10px">筛选类型</span>
+        <div class="block" style="display: flex; align-items: center">
+          <span style="margin-right: 10px">类型</span>
           <div style="margin-right: 10px" class="select is-small">
-            <select v-model="filterType">
+            <select v-model="type">
               <option v-for="option in options" :key="option">
                 {{option}}
               </option>
             </select>
           </div>
+          <button class="button block is-info is-small" @click="addContent">
+            新建
+          </button>
         </div>
-        <button
-          style="margin-right: 10px"
-          class="button is-small is-info"
-          @click="updateIndex"
-        >
-          随机一条
-        </button>
-        <button class="button is-small is-link" @click="toggleView">
-          切换视图
-        </button>
       </div>
+
+      <article class="message is-info">
+        <div class="message-header">
+          <p>内容筛选</p>
+        </div>
+        <div class="message-body" style="display: flex">
+          <div style="display: flex; align-items: center">
+            <span style="margin-right: 10px">筛选类型</span>
+            <div style="margin-right: 10px" class="select is-small">
+              <select v-model="filterType">
+                <option v-for="option in options" :key="option">
+                  {{option}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <button
+            style="margin-right: 10px"
+            class="button is-small is-info"
+            @click="updateIndex"
+          >
+            随机一条
+          </button>
+          <button class="button is-small is-link" @click="toggleView">
+            切换视图
+          </button>
+        </div>
+      </article>
       <div class="box" v-if="view === 'content'">
+        <div class="block columns">
+          <div class="column">
+            <p>问题</p>
+            <textarea
+              class="textarea block question"
+              v-model="newQuestion"
+              cols="20"
+              rows="10"
+              style="resize: none"
+            ></textarea>
+          </div>
+          <div class="column">
+            <p style="cursor: pointer" @click="isShowAnswer = !isShowAnswer">
+              答案(点击显隐)
+            </p>
+            <textarea
+              v-if="isShowAnswer"
+              class="textarea block answer"
+              v-model="newAnswer"
+              cols="20"
+              rows="10"
+              style="resize: none"
+            ></textarea>
+          </div>
+        </div>
         <div class="block" style="display: flex; align-items: center">
           <span style="margin-right: 10px">类型</span>
           <div style="margin-right: 10px" class="select is-small">
@@ -96,31 +126,6 @@
           >
             删除
           </button>
-        </div>
-        <div class="block columns">
-          <div class="column">
-            <p>问题</p>
-            <textarea
-              class="textarea block question"
-              v-model="newQuestion"
-              cols="20"
-              rows="5"
-              style="resize: none"
-            ></textarea>
-          </div>
-          <div class="column">
-            <p style="cursor: pointer" @click="isShowAnswer = !isShowAnswer">
-              答案(点击显隐)
-            </p>
-            <textarea
-              v-if="isShowAnswer"
-              class="textarea block answer"
-              v-model="newAnswer"
-              cols="20"
-              rows="5"
-              style="resize: none"
-            ></textarea>
-          </div>
         </div>
       </div>
       <div class="box" v-if="view === 'list'">

@@ -1,21 +1,19 @@
-const OPTIONS = ['笔记', '面试'];
-
 new Vue({
   el: '#app',
   data: {
-    type: OPTIONS[0],
+    type: '',
     question: '',
     answer: '',
     newType: '',
     newQuestion: '',
     newAnswer: '',
-    filterType: OPTIONS[0],
+    filterType: '',
     contentList: [],
     currContentIndex: 0,
     view: 'content', // content | list
-    options: OPTIONS,
+    options: [],
     isShowAnswer: false,
-    indexPool: [],
+    idPool: [],
   },
   methods: {
     async updateList() {
@@ -23,7 +21,7 @@ new Vue({
         type: this.filterType,
       });
       this.contentList = list.data;
-      this.indexPool = [];
+      this.idPool = [];
       this.updateIndex();
     },
     updateIndex() {
@@ -39,14 +37,14 @@ new Vue({
       this.toggleView();
     },
     getNoRepeatIndex() {
-      if (this.indexPool.length === this.contentList.length) {
+      if (this.idPool.length === this.contentList.length) {
         return 0;
       }
       let index = Math.floor(Math.random() * this.contentList.length);
-      while (this.indexPool.includes(index)) {
+      while (this.idPool.includes(this.contentList[index].id)) {
         index = Math.floor(Math.random() * this.contentList.length);
       }
-      this.indexPool.push(index);
+      this.idPool.push(this.contentList[index].id);
       return index;
     },
     async addContent() {
@@ -67,7 +65,7 @@ new Vue({
         id,
       });
       this.contentList = this.contentList.filter((item) => item.id !== id);
-      this.indexPool.pop();
+      this.idPool = this.idPool.filter((item) => item.id !== id);
       this.updateIndex();
     },
     async setContent(id) {
@@ -102,6 +100,10 @@ new Vue({
         this.filterType = localStorage.getItem('filterType');
       }
     },
+    async getTypes() {
+      const res = await axios.post('/get_types', {});
+      this.options = res.data.map((item) => item.type);
+    },
   },
   watch: {
     currContentIndex(val) {
@@ -121,8 +123,8 @@ new Vue({
       this.updateList();
     },
   },
-  mounted() {
+  async mounted() {
     this.restoreCache();
-    this.updateList();
+    await this.getTypes();
   },
 });

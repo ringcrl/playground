@@ -17,6 +17,11 @@ app.use(bodyParser());
   });
 
   router
+    .post('/get_types', async (ctx) => {
+      const sql = 'SELECT * FROM t_types';
+      const res = await db.all(sql);
+      ctx.body = res;
+    })
     .post('/get', async (ctx) => {
       const { type } = ctx.request.body;
       let sql = 'SELECT * FROM t_notes';
