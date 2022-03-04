@@ -13,7 +13,7 @@ import { PAGInit } from 'libpag';
   components: {
   },
 })
-export default class HomeView extends Vue {
+export default class Pag extends Vue {
   mounted() {
     PAGInit({
       locateFile: (file: string) => `//libs.com/${file}`,
