@@ -5,7 +5,13 @@
 pm2 start notes-server.js
 ```
 
-# 表操作
+# sqlite3 操作
+
+## 打开db
+
+```sh
+sqlite3 path_to_db
+```
 
 ## 创建表
 
@@ -74,4 +80,20 @@ ALTER TABLE t1_backup RENAME TO t1;
 ```sh
 # 导出 csv
 sqlite3  -csv -header local.db  "select * from NOTES" > notes.csv
+```
+
+# 快捷备忘
+
+```sql
+-- 打开表
+sqlite3 /Users/ringcrl/Documents/saga/chenng/local.db
+
+-- 查看类型
+SELECT * FROM t_types;
+
+-- 添加类型
+INSERT INTO t_types VALUES (NULL, '新类型');
+
+-- 删除类型
+DELETE FROM t_types WHERE id=1;
 ```
