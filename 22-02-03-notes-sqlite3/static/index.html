@@ -72,12 +72,12 @@
           >
             随机一条
           </button>
-          <button class="button is-small is-link" @click="toggleView">
-            切换视图
+          <button class="button is-small is-link" @click="isShowAnswer = !isShowAnswer">
+            答案显隐
           </button>
         </div>
       </article>
-      <div class="box" v-if="view === 'content'">
+      <div class="box">
         <div class="block columns">
           <div class="column">
             <p>问题</p>
@@ -90,8 +90,8 @@
             ></textarea>
           </div>
           <div class="column">
-            <p style="cursor: pointer" @click="isShowAnswer = !isShowAnswer">
-              答案(点击显隐)
+            <p>
+              答案
             </p>
             <textarea
               v-if="isShowAnswer"
@@ -128,7 +128,7 @@
           </button>
         </div>
       </div>
-      <div class="box" v-if="view === 'list'">
+      <div class="box">
         <ul>
           <li
             v-for="(item, index) in contentList"
