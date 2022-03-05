@@ -7,6 +7,7 @@ new Vue({
     newType: '',
     newQuestion: '',
     newAnswer: '',
+    recallAnswer: '',
     filterType: '',
     contentList: [],
     currContentIndex: 0,
@@ -25,6 +26,7 @@ new Vue({
       this.updateIndex();
     },
     updateIndex() {
+      this.recallAnswer = '';
       const index = this.getNoRepeatIndex();
       this.setIndex(index);
     },

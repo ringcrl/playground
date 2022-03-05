@@ -101,6 +101,15 @@
               rows="10"
               style="resize: none"
             ></textarea>
+            <textarea
+            v-if="!isShowAnswer"
+            class="textarea block answer"
+            v-model="recallAnswer"
+            placeholder="答案回忆"
+            cols="20"
+            rows="10"
+            style="resize: none"
+          ></textarea>
           </div>
         </div>
         <div class="block" style="display: flex; align-items: center">
