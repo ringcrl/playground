@@ -35,6 +35,7 @@ new Vue({
       this.updateCurrContent(this.currContentIndex);
     },
     onListItemClick(index) {
+      document.documentElement.scrollTop = 0;
       this.setIndex(index);
       this.toggleView();
     },
