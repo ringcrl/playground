@@ -1,8 +1,7 @@
 // Depends on tencentcloud-sdk-nodejs version 4.0.3 or higher
 const tencentcloud = require('tencentcloud-sdk-nodejs');
-const path = require('path');
 require('dotenv')
-  .config({ path: path.resolve('.', '.env') });
+  .config({ path: '/Users/ringcrl/Documents/saga/playground/22-03-08-translate/.env' });
 
 const {
   SecretId, SecretKey,
@@ -24,17 +23,21 @@ const clientConfig = {
 };
 
 const client = new TmtClient(clientConfig);
-const params = {
-  SourceText: '中文翻译测试',
-  Source: 'zh',
-  Target: 'en',
-  ProjectId: 0,
-};
-client.TextTranslate(params).then(
-  (data) => {
-    console.log(data);
-  },
-  (err) => {
-    console.error('error', err);
-  },
-);
+
+async function translate(text) {
+  const params = {
+    SourceText: text,
+    Source: 'zh',
+    Target: 'en',
+    ProjectId: 0,
+  };
+  const res = await client.TextTranslate(params);
+  return res.TargetText;
+}
+
+// (async () => {
+//   const res = await translate('测试');
+//   console.log(res);
+// })();
+
+module.exports = translate;

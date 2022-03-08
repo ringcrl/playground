@@ -46,5 +46,6 @@ module.exports = {
     'no-mixed-operators': 0,
     'consistent-return': 0,
     'no-bitwise': 0,
+    'no-lonely-if': 0,
   },
 };
