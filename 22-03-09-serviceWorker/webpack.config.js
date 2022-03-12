@@ -77,6 +77,8 @@ module.exports = {
         },
       ],
     }),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './index.html',
+    }),
   ],
 };
