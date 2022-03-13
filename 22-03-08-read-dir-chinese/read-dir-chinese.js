@@ -14,8 +14,8 @@ function getFileChineseList(filePath) {
 }
 
 function readDirFiles(dir, filesList = []) {
-  const files = fs.readdirSync(dir);
   const allowFiles = ['js', 'ts', 'vue'];
+  const files = fs.readdirSync(dir);
   files.forEach((item) => {
     const fullPath = path.join(dir, item);
     const stat = fs.statSync(fullPath);
