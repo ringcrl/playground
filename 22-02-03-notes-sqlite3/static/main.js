@@ -13,8 +13,9 @@ new Vue({
     currContentIndex: 0,
     view: 'content', // content | list
     options: [],
-    isShowAnswer: false,
+    isShowAnswer: true,
     idPool: [],
+    mode: 'create', // create | review
   },
   methods: {
     async updateList() {
@@ -78,6 +79,11 @@ new Vue({
         answer: this.newAnswer,
         type: this.newType,
       });
+      const contentIndex = this.contentList.findIndex((item) => item.id === id);
+      this.contentList[contentIndex].question = this.newQuestion;
+      this.contentList[contentIndex].answer = this.newAnswer;
+      this.contentList[contentIndex].type = this.newType;
+      this.contentList = this.contentList.filter((item) => item.type === this.filterType);
     },
     toggleView() {
       if (this.view === 'content') {
@@ -102,10 +108,21 @@ new Vue({
       if (localStorage.getItem('filterType')) {
         this.filterType = localStorage.getItem('filterType');
       }
+      if (localStorage.getItem('mode')) {
+        this.mode = localStorage.getItem('mode');
+      }
     },
     async getTypes() {
       const res = await axios.post('/get_types', {});
       this.options = res.data.map((item) => item.type);
+    },
+    toggleMode() {
+      if (this.mode === 'create') {
+        this.mode = 'review';
+      } else {
+        this.mode = 'create';
+      }
+      localStorage.setItem('mode', this.mode);
     },
   },
   watch: {
