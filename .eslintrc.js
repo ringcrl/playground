@@ -47,5 +47,6 @@ module.exports = {
     'consistent-return': 0,
     'no-bitwise': 0,
     'no-lonely-if': 0,
+    '@typescript-eslint/naming-convention': 0,
   },
 };
