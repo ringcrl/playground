@@ -9,6 +9,7 @@ const {
 } = argv;
 
 const filePath = p;
+// const filePath = '/Users/ringcrl/Documents/saga/playground/assets/videos/01.mp4'; // mock
 
 if (!filePath) {
   console.log('请输入文件路径: node main.js -p path_to_file');
@@ -22,50 +23,59 @@ const {
   SecretId, SecretKey, Bucket, Region, Key, CName,
 } = process.env;
 
-const cos = new COS({
-  SecretId,
-  SecretKey,
-});
+(async () => {
+  const fileInfo = fs.statSync(filePath);
+  const fileSize = fileInfo.size;
+  const startTime = Date.now();
 
-const postfix = filePath.split('.').pop();
-const fileName = `${uuid()}.${postfix}`;
-const fileKey = `${Key}/${fileName}`;
+  const cos = new COS({
+    SecretId,
+    SecretKey,
+  });
 
-// 小文件上传
-// cos.putObject(
-//   {
-//     Bucket,
-//     Region,
-//     Key: fileKey,
-//     Body: fs.createReadStream(filePath),
-//   },
-//   (err, data) => {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     console.log(data);
+  const postfix = filePath.split('.').pop();
+  const fileName = `${uuid()}.${postfix}`;
+  const fileKey = `${Key}/${fileName}`;
 
-//     console.log(`${CName}/${fileKey}`);
-//   },
-// );
+  // 1、分片上传
+  cos.sliceUploadFile({
+    Bucket,
+    Region,
+    Key: fileKey,
+    FilePath: filePath,
+    SliceSize: 1024 * 1024 * 32,
+    AsyncLimit: 10,
+    onTaskReady(taskId) {
+      console.log(taskId);
+    },
+  }, (err, data) => {
+    if (err) {
+      return console.error(err);
+    }
+    console.log('data', data);
+    console.log('平均速度：', `${(fileSize / 1024 / 1024) / ((Date.now() - startTime) / 1000)} MB/s`);
+  });
 
-// 大文件分片上传
-cos.sliceUploadFile({
-  Bucket, /* 填入您自己的存储桶，必须字段 */
-  Region, /* 存储桶所在地域，例如ap-beijing，必须字段 */
-  Key: fileKey, /* 存储在桶里的对象键（例如1.jpg，a/b/test.txt），必须字段 */
-  FilePath: filePath, /* 必须 */
-  SliceSize: 1024 * 1024 * 10, // 大于10M分片上传
-  AsyncLimit: 100,
-  onTaskReady(taskId) { /* 非必须 */
-    console.log(taskId);
-  },
-  onHashProgress(progressData) { /* 非必须 */
-    console.log(JSON.stringify(progressData));
-  },
-  onProgress(progressData) { /* 非必须 */
-    console.log(JSON.stringify(progressData));
-  },
-}, (err, data) => {
-  console.log(err || data);
-});
+  // 2、根据大小自动切换分片上传
+  // cos.uploadFile(
+  //   {
+  //     Bucket,
+  //     Region,
+  //     Key: fileKey,
+  //     FilePath: filePath,
+  //     SliceSize: 1024 * 1024 * 32,
+  //     AsyncLimit: 10,
+  //     onTaskReady(taskId) { /* 非必须 */
+  //       console.log('taskId', taskId);
+  //     },
+  //   // },
+  //   },
+  //   (err, data) => {
+  //     if (err) {
+  //       return console.error(err);
+  //     }
+  //     console.log('data', data);
+  //     console.log('平均速度：', `${(fileSize / 1024 / 1024) / ((Date.now() - startTime) / 1000)} MB/s`);
+  //   },
+  // );
+})();

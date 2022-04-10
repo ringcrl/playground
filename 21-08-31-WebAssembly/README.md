@@ -5,8 +5,15 @@ https://developer.mozilla.org/zh-CN/docs/WebAssembly/C_to_wasm
 
 https://emscripten.org/docs/getting_started/Tutorial.html
 
-# 开启 emcc
+# emcc 编译
 
 ```sh
+# 开启 emcc
 vim ~/.zshrc
+
+# 编译
+emcc ./main.c
+
+# 运行
+node a.out.js
 ```
