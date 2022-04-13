@@ -8,8 +8,8 @@ const {
   p,
 } = argv;
 
-const filePath = p;
-// const filePath = '/Users/ringcrl/Documents/saga/playground/assets/videos/01.mp4'; // mock
+// const filePath = p;
+const filePath = '/Users/ringcrl/Documents/saga/playground/assets/videos/01.mp4'; // mock
 
 if (!filePath) {
   console.log('请输入文件路径: node main.js -p path_to_file');
@@ -49,6 +49,8 @@ const {
       console.log(taskId);
     },
   }, (err, data) => {
+    const requestId = (err || data).headers['x-cos-request-id'];
+    console.log('requestId', requestId);
     if (err) {
       return console.error(err);
     }
