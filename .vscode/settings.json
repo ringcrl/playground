@@ -74,7 +74,10 @@
     "typeinfo": "cpp",
     "unordered_map": "cpp",
     "utility": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "variant": "cpp"
   },
   "liveServer.settings.port": 5502,
   "python.linting.pylintEnabled": true,
