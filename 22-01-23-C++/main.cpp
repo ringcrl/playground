@@ -10,6 +10,7 @@
 
 // 引入命名空间，否则调用 cout 和 endl 就要加上命名空间了
 // std::cout << "Hello World!" << std::endl;
+// << 是插入运算符，endl 是控制符，表示重启一行
 // 现在可以直接调用: cout << "Hello World!" << endl;
 using namespace std;
 
