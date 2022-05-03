@@ -11,7 +11,8 @@
       "cwd": "${fileDirname}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "preLaunchTask": "C/C++: clang++ 生成活动文件"
     },
     {
       "name": "JS",

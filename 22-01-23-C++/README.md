@@ -118,7 +118,7 @@ int main()
 
 ```
 
-## 数组
+## int arr[5] 数组
 
 ```cpp
 #include <iostream>
@@ -135,7 +135,7 @@ int main()
 
 ```
 
-## 字符串
+## std::string 字符串
 
 ```cpp
 #include <iostream>
@@ -156,7 +156,7 @@ int main()
 
 ```
 
-## 指针
+## *ptr 指针
 
 ```cpp
 #include <iostream>
@@ -213,7 +213,7 @@ int main()
 
 ```
 
-## 引用
+## & 引用
 
 ```cpp
 #include <iostream>
@@ -268,7 +268,7 @@ int main()
 
 ```
 
-## 结构体
+## struct 结构体
 
 ```cpp
 #include <iostream>
@@ -299,7 +299,7 @@ int main()
 
 ```
 
-## 类
+## class 类
 
 ```cpp
 #include <iostream>
@@ -392,6 +392,42 @@ int main()
     SubBox subBox;
     subBox.setSubBoxWidth(0.5);
     std::cout << "subBox 的 protected 属性：" << subBox.getSubBoxWidth() << std::endl;
+}
+
+```
+
+## vector 数组代替品
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+    vector<double> vecDouble = {1.0, 2.0, 3.0, 4.0, 5.0};
+
+    // 向数组插入数字
+    vecDouble.push_back(6.0);
+
+    // 遍历所有元素
+    for (int i = 0; i < vecDouble.size(); i++) {
+        cout << "vecDouble[" << i << "] = " << vecDouble[i] << endl;
+    }
+
+    // 得到迭代器对象
+    vector<double>::iterator it;
+    // 从第一个元素开始迭代
+    // ++ 写在前面避免缓存，写在后面会产生缓存问题
+    for (it = vecDouble.begin(); it != vecDouble.end(); ++it) {
+        cout << "*it = " << *it << endl;
+    }
+
+    // 正序排序
+    sort(vecDouble.begin(), vecDouble.end());
+    // 逆序排序
+    reverse(vecDouble.begin(), vecDouble.end());
 }
 
 ```
