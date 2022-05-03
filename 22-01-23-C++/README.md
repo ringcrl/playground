@@ -5,6 +5,9 @@
 g++ main.cpp -o main
 
 # 方法2：使用 VSCode 插件 Code Runner 直接运行
+
+# 方法3：shift + cmd + B
+./main
 ```
 
 # VSCode 配置
@@ -160,32 +163,61 @@ int main()
 
 ```cpp
 #include <iostream>
+using namespace std;
 
 int main()
 {
-    int var = 20; // 实际变量声明
-    int *ip;      // 变量指针声明
-    ip = &var;    // 在指针变量中存储 var 的地址
-    std::cout << "变量 var 的值为：" << var << std::endl;
-    std::cout << "变量 var 在内存中的地址为：" << &var << std::endl;
-    std::cout << "变量 ip 在内存中的地址为：" << ip << std::endl;
-    std::cout << "变量 ip 指向的内存区域的值为：" << *ip << std::endl;
-    int *ptr = NULL;
-    std::cout << "变量 ptr 的值为：" << ptr << std::endl << std::endl;
+    // int* p 的写法偏向于地址，即 p 就是一个地址变量，表示一个十六进制地址
+    // int *p 的写法偏向于值，*p 是一个整形变量，能够表示一个整型值
+    // 声明中的 * 号和使用中的 * 号含义完全不同
 
-    // 指向指针的指针
-    int var2;
-    int *ptr2;
-    int **pptr;
-    var2 = 3000;
-    // 获取 var 的地址
-    ptr2 = &var2;
-    // 使用运算符 & 获取 ptr 的地址
-    pptr = &ptr2;
-    // 使用 pptr 获取值
-    std::cout << "var2 值为 :" << var2 << std::endl;
-    std::cout << "*ptr2 值为:" << *ptr2 << std::endl;
-    std::cout << "**pptr 值为:" << **pptr << std::endl;
+    int num = 1024;
+    // 给指针赋值，只能使用 & 符号
+    int* ptr_num = &num;
+    cout << "num = " << num << endl;
+    cout << "*ptr_num = " << *ptr_num << endl;
+    cout << "ptr_num = " << ptr_num << endl;
+
+    // 不给指针值，会有默认值，就是野指针，非常危险，会导致很深的bug
+    double* ptr_double;
+    cout << "ptr_double = " << ptr_double << endl;
+    // 所以初始化为 nullptr
+    int* ptr1 = nullptr;
+
+    // void* 可以指定任何类型，但是不能使用 void* 来修改值，一般用来和别的指针进行比较
+}
+
+```
+
+## & 引用
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    // 引用是对指针的简单封装，底层仍然是指针
+    // 获取引用地址的时候，编译器会进行内部转换
+    int num = 108;
+    int& ref_num = num;
+    ref_num = 118;
+    std::cout << &num << '\t' << &ref_num << std::endl;
+    // 等价于
+    int num2 = 108;
+    int* ref_num2 = &num2;
+    *ref_num2 = 118;
+    std::cout << &num2 << '\t' << ref_num2 << std::endl;
+
+    // 声明简单的变量
+    int i = 5;
+    double d = 11.7;
+    // 声明引用变量
+    int& r = i;
+    double& s = d;
+    std::cout << "i 的值: " << i << std::endl;
+    std::cout << "i 的引用: " << r << std::endl;
+    std::cout << "d 的值: " << d << std::endl;
+    std::cout << "d 的引用: " << s << std::endl;
 }
 
 ```
@@ -209,30 +241,6 @@ int main()
     unsigned long sec;
     getSeconds(&sec);
     std::cout << "Number of seconds :" << sec << std::endl;
-}
-
-```
-
-## & 引用
-
-```cpp
-#include <iostream>
-
-int main()
-{
-    // 引用
-    // 声明简单的变量
-    int i;
-    double d;
-    // 声明引用变量
-    int &r = i;
-    double &s = d;
-    i = 5;
-    std::cout << "Value of i : " << i << std::endl;
-    std::cout << "Value of i reference : " << r << std::endl;
-    d = 11.7;
-    std::cout << "Value of d : " << d << std::endl;
-    std::cout << "Value of d reference : " << s << std::endl;
 }
 
 ```
