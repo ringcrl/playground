@@ -222,9 +222,145 @@ int main()
 
 ```
 
+## new 动态内存分配
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    // 使用 new 动态分配内存
+    // 指针真正的用武之地：在运行阶段分配未命名的内存以存储值
+    // 在此情况下，只能通过指针来访问内存
+
+    // 1、在运行阶段为一个 int 值分配未命名的内存
+    // 2、使用指针来指向这个值（右->左），左边栈区，右边堆区
+    // 栈区(stack)由编译器自动分配释放，堆区(heap)由程序员分配释放
+    int* ptr_int = new int;
+    // 3、new 过的内存必须手动 delete
+    // 不要用 delete 删除不是 new 分配的内存
+    // 不要用 delete 释放同一个内存两次
+    delete ptr_int;
+    
+    // 编译时
+    int nums1[5];
+    // 运行时
+    int* nums2 = new int[5];
+    cout << sizeof(nums1) << '\t' << sizeof(nums2) << endl; // 20字节 8字节
+    delete [] nums2;
+}
+
+```
+
 ## 函数
 
-### 参数指针
+### 原型与定义
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// 函数定义
+int sum(int, int);
+// 函数实现
+int sum(int num1, int num2) {
+    return num1 + num2;
+}
+
+int main()
+{
+    int res = sum(2, 3);
+    cout << res << endl;
+}
+
+```
+
+### 引用参数
+
+```cpp
+#include <iostream>
+using namespace std;
+
+void change(int &num)
+{
+    num++;
+}
+
+int main()
+{
+    int num = 10;
+    change(num);
+    cout << num << endl; // 11
+}
+
+```
+
+### 数组参数
+
+```cpp
+// 一维数组
+#include <iostream>
+using namespace std;
+
+void input(int [], int);
+void input(int values[], int len) {
+    if (len > 5) {
+        cout << "数组长度只能是5以内" << endl;
+        return;
+    }
+
+    string valueNames[] = {"first", "second", "third", "fourth", "fifth"};
+    for (int i = 0; i < len; i++) {
+        cout << valueNames[i] << endl;
+        cin >> values[i];
+    }
+}
+
+int main()
+{
+    int values[5];
+    // sizeof(values)/sizeof(int) 求数组长度
+    input(values, sizeof(values)/sizeof(int));
+}
+
+```
+
+```cpp
+// 二维数组
+#include <iostream>
+using namespace std;
+
+void show(const double (*)[5], int);
+void show(const double (*arrs)[5], int len) {
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < 5; j++) {
+            cout << arrs[i][j] << "\t";
+        }
+        cout << endl;
+    }
+}
+
+int main()
+{
+    double powers[3][5] = {
+        {1, 2, 3, 4, 5},
+        {2, 4, 6, 8, 10},
+        {3, 6, 9, 12, 15}
+    };
+    show(powers, 3);
+}
+
+```
+
+### 不可修改参数
+
+```cpp
+void show1(const int valueArray[], int len);
+void show2(const int* valueArray, int len);
+```
+
+### 指针参数
 
 ```cpp
 #include <iostream>
