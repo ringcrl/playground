@@ -198,6 +198,7 @@ int main()
 {
     // 引用是对指针的简单封装，底层仍然是指针
     // 获取引用地址的时候，编译器会进行内部转换
+    // 引用必须一开始就初始化
     int num = 108;
     int& ref_num = num;
     ref_num = 118;
@@ -218,6 +219,10 @@ int main()
     std::cout << "i 的引用: " << r << std::endl;
     std::cout << "d 的值: " << d << std::endl;
     std::cout << "d 的引用: " << s << std::endl;
+
+    // 不可以直接引用常量（字面量）
+    // double& d = 12.3; // 错误
+    const double& d = 12.3; // 正确
 }
 
 ```
@@ -287,11 +292,22 @@ void change(int &num)
     num++;
 }
 
+void swap(int &a, int &b)
+{
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
 int main()
 {
     int num = 10;
     change(num);
     cout << num << endl; // 11
+
+    int a = 10, b = 20;
+    swap(a, b);
+    cout << a << " " << b << endl; // 20 10
 }
 
 ```
@@ -377,6 +393,63 @@ int main()
     unsigned long sec;
     getSeconds(&sec);
     std::cout << "Number of seconds :" << sec << std::endl;
+}
+
+```
+
+### 函数指针
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// 声明函指针
+int (*ptrMyPow)(int, int);
+
+int myPow(int base, int exponent)
+{
+    int res = 1;
+    for (int i = 0; i < exponent; i++)
+    {
+        res *= base;
+    }
+    return res;
+}
+
+int main()
+{
+    // 让声明的函数指针指向函数
+    ptrMyPow = myPow;
+    cout << ptrMyPow(2, 3) << endl; // 8
+    cout << (*ptrMyPow)(2, 3) << endl; // 8
+}
+
+```
+
+### auto 自动推断
+
+```cpp
+// C++ 11 开始支持 auto
+// auto 必须赋值初始函数
+auto ptrCalc = addition;
+```
+
+### 内联函数
+
+```cpp
+#include <iostream>
+using namespace std;
+
+inline int sum(int num1, int num2)
+{
+    return num1 + num2;
+}
+
+int main()
+{
+    // 这行会直接替换为上述函数的结构体内的内容
+    int res = sum(2, 3);
+    cout << res << endl;
 }
 
 ```
