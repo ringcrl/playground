@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 // 开发 node 插件必须引入下面路径找到对应头文件
-                "/Users/ringcrl/.nvm/versions/node/v14.17.3/include/node",
+                "/Users/ringcrl/.nvm/versions/node/v16.15.0/include/node",
                 "/Users/ringcrl/Documents/saga/playground/22-05-07-node-addon-api/node_modules/node-addon-api"
             ],
             "defines": [],
