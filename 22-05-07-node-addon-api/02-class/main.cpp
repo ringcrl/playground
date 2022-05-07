@@ -1,22 +1,5 @@
 #include "classexample.h"
 
-// 原始类
-// ActualClass::ActualClass(double value)
-// {
-//   this->value_ = value;
-// }
-
-// double ActualClass::getValue()
-// {
-//   return this->value_;
-// }
-
-// double ActualClass::add(double toAdd)
-// {
-//   this->value_ += toAdd;
-//   return this->value_;
-// }
-
 Napi::FunctionReference ClassExample::constructor;
 
 // ClassExample::Init 函数负责创建和设置导出密钥。这里我们将类作为 ClassExample 导出到 JS 端
@@ -84,6 +67,10 @@ Napi::Value ClassExample::Add(const Napi::CallbackInfo &info)
 
   // 但由于该值是双精度值，我们需要用 Napi::Number 实例包装它，以便将其传递给 JS 端
   return Napi::Number::New(info.Env(), answer);
+}
+
+ActualClass* ClassExample::GetInternalInstance() {
+  return this->actualClass_;
 }
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports)

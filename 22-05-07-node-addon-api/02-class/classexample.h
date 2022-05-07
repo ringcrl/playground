@@ -10,6 +10,7 @@ public:
   // 就像函数一样，我们需要一个 Init 方法来设置导出的key
   static Napi::Object Init(Napi::Env env, Napi::Object exports); // 将导出键设置为JS的INIT函数
   ClassExample(const Napi::CallbackInfo &info);                  // 初始化的构造函数
+  ActualClass *GetInternalInstance();                            // 获取原始实例
 
 private:
   // 静态 Napi::FunctionReference 构造函数
