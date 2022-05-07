@@ -48,5 +48,6 @@ module.exports = {
     'no-bitwise': 0,
     'no-lonely-if': 0,
     '@typescript-eslint/naming-convention': 0,
+    'import/no-unresolved': 0,
   },
 };

@@ -283,6 +283,17 @@ int main()
 
 ### 引用参数
 
+- 能够修改函数中的数据对象
+- 数据对象较大的时候传递引用可以提高程序的运行效率
+    - 函数中不需要修改传的参数
+        - 如果数据对象很小，建议按值传递
+        - 传递数组只能使用指针，并使用 const 关键字
+        - 较大的对象则使用 const 指针或引用，提高程序的效率
+    - 函数中需要修改传递的参数
+        - 数据对象是基本类型或结构时，可以使用指针或引用（基本类型建议指针）
+        - 数据对象是数组时只能使用指针
+        - 数据对象是类对象时，要求使用引用
+
 ```cpp
 #include <iostream>
 using namespace std;
@@ -454,6 +465,104 @@ int main()
 
 ```
 
+### 返回引用
+
+- 永远不要将函数局部变量用作引用返回，函数销毁引用也被销毁了
+
+### 函数重载
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// 函数重载
+// 获取数组长度会比较麻烦，入参的时候传入
+void Sort(int[], int len);
+void Sort(float[], int len);
+void Sort(double[], int len);
+
+int iNums[] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+float fNums[] = {10.1, 9.1, 8.1, 7.1, 6.1, 5.1, 4.1, 3.1, 2.1, 1.1};
+double dNums[] = {10.1, 9.1, 8.1, 7.1, 6.1, 5.1, 4.1, 3.1, 2.1, 1.1};
+
+void Sort(int nums[], int len)
+{
+    int temp;
+    for (int i = 0; i < len; i++)
+    {
+        for (int j = 0; j < len - i - 1; j++)
+        {
+            temp = nums[j];
+            nums[j] = nums[j + 1];
+            nums[j + 1] = temp;
+        }
+    }
+}
+
+void Show(int nums[], int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        cout << nums[i] << " ";
+    }
+    cout << endl;
+}
+
+int main()
+{
+    Sort(iNums, sizeof(iNums) / sizeof(int));
+    Show(iNums, sizeof(iNums) / sizeof(int));
+}
+
+```
+
+### 函数模板
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// 模板函数，避免使用过多的重载
+template<typename T> void Sort(T tArray[], int len);
+template<typename T> void Show(T tArray[], int len);
+
+int iNums[] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+float fNums[] = {10.1, 9.1, 8.1, 7.1, 6.1, 5.1, 4.1, 3.1, 2.1, 1.1};
+double dNums[] = {10.1, 9.1, 8.1, 7.1, 6.1, 5.1, 4.1, 3.1, 2.1, 1.1};
+
+template<typename T>
+void Sort(T tArray[], int len)
+{
+    T temp;
+    for (int i = 0; i < len; i++)
+    {
+        for (int j = 0; j < len - i - 1; j++)
+        {
+            temp = tArray[j];
+            tArray[j] = tArray[j + 1];
+            tArray[j + 1] = temp;
+        }
+    }
+}
+
+template<typename T>
+void Show(T tArray[], int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        cout << tArray[i] << " ";
+    }
+    cout << endl;
+}
+
+int main()
+{
+    Sort(iNums, sizeof(iNums) / sizeof(int));
+    Show(iNums, sizeof(iNums) / sizeof(int));
+}
+
+```
+
 ## time 时间
 
 ```cpp
@@ -517,6 +626,8 @@ int main()
 ```
 
 ## class 类
+
+### Box示例
 
 ```cpp
 #include <iostream>
@@ -612,6 +723,52 @@ int main()
 }
 
 ```
+
+### 使用 hpp 内联实现
+
+```cpp
+// LandOwner.hpp
+#include <iostream>
+using namespace std;
+
+// hpp 文件一般包含实现的内联函数
+// 只要不是纯木板，一般使用 .h 作为头文件后缀，使用 cpp 文件作为函数的实现
+class LandOwnerV1
+{
+private:
+  string name; // 地主名称
+  long score; // 地主积分
+  int cards[20]; // 地主的手牌数组
+public:
+  LandOwnerV1() {}; // 构造函数
+  ~LandOwnerV1() {}; // 析构函数
+  inline void TouchCard(int cardCount)
+  {
+    cout << name << "摸了" << cardCount << "张牌" << endl;
+  }
+  void ShowScore()
+  {
+    cout << name << "的积分是" << score << endl;
+  }
+};
+
+```
+
+```cpp
+// main.cpp
+#include <iostream>
+using namespace std;
+
+#include "LandOwner.hpp" // 要使用类必须包含类的头文件
+
+int main()
+{
+    LandOwnerV1 landOwner1;
+    landOwner1.TouchCard(100);
+}
+
+```
+
 
 ## vector 数组代替品
 
