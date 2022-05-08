@@ -4,10 +4,41 @@
 # 方法1：命令行编译
 g++ main.cpp -o main
 
-# 方法2：使用 VSCode 插件 Code Runner 直接运行
+# 方法2：VSCode 插件 Code Runner 直接运行，添加配置：
+"code-runner.executorMap": {
+    "cpp": "cd $dir && g++ -std=c++14 *.cpp -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+},
 
-# 方法3：shift + cmd + B
-./main
+# 方法3：VSCode Debug 运行，.vscode/task.json 配置：
+// https://code.visualstudio.com/docs/editor/tasks
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "cppbuild",
+      "label": "C/C++: clang++ 生成活动文件",
+      "command": "/usr/bin/clang++",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-g",
+        "-std=c++17",
+        "${fileDirname}/**.cpp",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "编译器: /usr/bin/clang++"
+    }
+  ]
+}
+
 ```
 
 # VSCode 配置
@@ -769,6 +800,114 @@ int main()
 
 ```
 
+### new 与非 new 调用
+
+```cpp
+// LandOwner.h
+#include <iostream>
+using namespace std;
+
+class LandOwner
+{
+private:
+  string name;   // 地主名称
+  long score;    // 地主积分
+  int cards[20]; // 地主的手牌数组
+public:
+  // 构造函数重载
+  LandOwner();               // 构造函数的声明，无参数
+  LandOwner(int);            // 构造函数的声明，一个 int 参数
+  LandOwner(string);         // 构造函数的声明，一个 string 参数
+  LandOwner(string, string); // 构造函数的声明，两个 string 参数
+  ~LandOwner();              // 析构函数的声明
+  void TouchCard(int);       // 声明摸牌的方法，不用写参数名
+  void ShowScore();          // 声明的显示积分的方法
+};
+
+```
+
+```cpp
+// LandOwner.cpp
+#include <iostream>
+using namespace std;
+
+#include "LandOwner.h"
+
+LandOwner::LandOwner()
+{
+  cout << "构造函数无参数调用" << endl;
+}
+
+LandOwner::LandOwner(int count)
+{
+  cout << "构造函数一个 int 参数调用" << count << endl;
+}
+
+// 实现摸牌方法，:: 是域运算符
+void LandOwner::TouchCard(int cardCount)
+{
+  // 在这里实现摸牌的方法
+  cout << "摸了" << cardCount << "张牌" << endl;
+}
+
+void LandOwner::ShowScore()
+{
+  // 在这里实现显示积分的方法
+  cout << "积分是：" << score << endl;
+}
+
+LandOwner::~LandOwner()
+{
+  cout << "析构函数被调用" << endl;
+}
+
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+
+#include "LandOwner.h" // 要使用类必须包含类的头文件
+
+int main()
+{
+    // 在栈内存创建：非指针形式的非 new 调用，main函数调用完之后会自动调用析构函数
+    // 生命周期只在{}内，调用完后就释放掉了
+    // LandOwner landOwner(); // 标准写法
+    // LandOwner landOwner; // 无参数简写：默认构造函数已经被调用
+    // LandOwner landOwner(1); // 一个参数被调用
+    // landOwner.TouchCard(20); // 使用.进行调用
+
+    // 在堆内存创建：指针形式的 new 调用，main函数调用完后不会自动调用析构函数
+    // 一般程序使用堆内存，否则容易被释放掉引发程序问题
+    LandOwner* landOwner = new LandOwner(); // 指针类型的构造函数被调用
+    landOwner->TouchCard(20); // 使用 -> 进行调用
+    landOwner->~LandOwner(); // 一定要手动调用析构函数，销毁非静态成员
+    // delete landOwner; // 或者通过这个方法销毁
+}
+
+```
+
+### 资源释放
+
+```cpp
+class Student
+{
+private:
+    double *scores;
+
+public:
+    Student(int len)
+    {
+        // 使用堆分配的指针资源，一定要记得销毁
+        scores = new double[len];
+    }
+    ~Student()
+    {
+        delete scores; //释放资源
+    }
+}
+```
 
 ## vector 数组代替品
 
