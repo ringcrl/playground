@@ -945,6 +945,76 @@ int main()
 
 ```
 
+## const 用法
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    // 第一类：const 修饰指针变量时：
+    // 1、只有一个 const 时，如果 const 位于 * 的左侧，表示指针所指的数据是常量，不能通过该指针修改实际数据，指针本身是变量，可以指向其他内存单元
+    // 2、只有一个 const 时，如果 const 位于 * 的右侧，表示指针本身是常量，不能指向其他内存单元，所指向的数据可以修改
+    // 3、如果有两个 const 位于 * 的左右两侧，表示指针和指针所指向的数据都不能修改
+
+    int num1 = 1024;
+    // 分配的变量是只读的，不能修改
+    const int num2 = num1;
+    // num2 = 2048; // error: num2 is const
+
+    const int *ptr1_num1 = &num1;
+    int const *ptr2_num1 = &num1;
+    ptr1_num1 = &num2; // OK
+    // *ptr1_num1 = 1234; // error: *ptr1_num1 is const
+    int *const ptr3_num1 = &num1;
+    // ptr3_num1 = ptr2_num1; // error: ptr2_num1 is const
+}
+
+// 第二类：const 修饰函数参数
+void ConstTest1(const int num)
+{
+    // num = 123; // error: 传递来的参数 num 在函数体内不可改变
+}
+
+// 不能修改传入的引用
+void ConstTest2(const string &str)
+{
+    // str = "123"; // error: 传递来的参数 str 在函数体内不可改变
+}
+
+class Computer
+{
+public:
+    Computer(int core) { this->_core = core; }
+    void buy() {}
+    // const 说明不会修改成员变量
+    int GetCore() const { return this->_core; }
+
+private:
+    int _core;
+};
+void ConstTest3(const Computer &computer)
+{
+    // computer.buy(); // error: 传递来的 const computer 在函数体内不可改变
+}
+
+// 第三类：const 修饰返回值
+// 使用 const 修饰引用类型的常见原因就是提高效率
+const Computer &GetMax(const Computer &computer1, const Computer &computer2)
+{
+    if (computer1.GetCore() > computer2.GetCore())
+    {
+        return computer1;
+    }
+    else
+    {
+        return computer2;
+    }
+}
+
+```
+
 # 应用
 
 ## 获取文件路径
