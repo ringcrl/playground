@@ -18,29 +18,6 @@ find /opt -name glew.h
 
 配置 CMAKELists.txt
 
-## 编译脚本
-
-```sh
-function cppcompile()
-{
-  filename=$1
-  re="^\#include \""
-  while read line
-  do
-    if [[ $line =~ $re ]]; then
-      temp=${line:9}
-      temp1=${temp#\"}
-      temp2=${temp1%\.*\"}
-      g++ -std=c++11 -c $temp2.cpp
-    fi
-  done < $filename.cpp
-  g++ -std=c++11 -c $filename.cpp
-  g++ -o $filename *.o
-  ./$filename
-  rm *.o
-}
-```
-
 ## GLFW 创建窗口
 
 https://www.glfw.org/download.html
