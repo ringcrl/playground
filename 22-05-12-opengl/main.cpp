@@ -29,9 +29,17 @@ int main(void)
   // 循环直到用户关闭窗口
   while (!glfwWindowShouldClose(window))
   {
-    // 渲染程序
-    // glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT);
+    // 搞一个绿色背景
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
+    // 画一个三角形
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBegin(GL_TRIANGLES);
+    glVertex2f(-0.5f, -0.5f);
+    glVertex2f(0.0f, 0.5f);
+    glVertex2f(0.5f, -0.5f);
+    glEnd();
 
     // 注册键盘事件
     processInput(window);
