@@ -1,4 +1,4 @@
-## 安装依赖
+# 环境配置
 
 ```sh
 # OpenGL 和 OpenGL ES 本身并没有提供任何机制来创建必要的上下文、管理窗口、用户输入、定时等
@@ -7,21 +7,21 @@ brew install glfw3 && brew info glfw # 然后将内容复制到 deps/GLFW 目录
 # 一个跨平台的开源C/C++扩展加载库。GLEW提供了高效的运行时机制，用于确定目标平台上支持哪些OpenGL扩展
 brew install glew && brew info glew # 然后将内容复制到 deps/GLEW 目录下
 
-# 查找 brew 安装路径
-brew info glfw3
-
-# 查找依赖
-find /opt -name glew.h
+# 配置 CMAKELists.txt
 ```
 
-## 编译
+# 文档
 
-配置 CMAKELists.txt
+https://docs.gl/
 
-## GLFW 创建窗口
+# 基础概念
 
-https://www.glfw.org/download.html
+## 顶点
 
-## GLAD 自动生成指定 OPENGL 版本的驱动程序
+顶点不是一个位置，是包含顶点的所有数据，可能包含位置、纹理坐标、法线、颜色、切线等等，所有内容包含在一个顶点，这些内容都是顶点的属性。
 
-https://github.com/Dav1dde/glad
+
+## stride
+
+每个顶点包含的字节量，跳到下个顶点要偏移相应字节。
+
