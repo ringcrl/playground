@@ -16,12 +16,15 @@ https://docs.gl/
 
 # 基础概念
 
-## 顶点
+- vertex：顶点不是一个位置，是包含顶点的所有数据，可能包含位置、纹理坐标、法线、颜色、切线等等，所有内容包含在一个顶点，这些内容都是顶点的属性。
+- stride：每个顶点包含的字节量，跳到下个顶点要偏移相应字节。
 
-顶点不是一个位置，是包含顶点的所有数据，可能包含位置、纹理坐标、法线、颜色、切线等等，所有内容包含在一个顶点，这些内容都是顶点的属性。
+# 教程
 
-
-## stride
-
-每个顶点包含的字节量，跳到下个顶点要偏移相应字节。
-
+- [编写 Shader 程序](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=7)
+- [从文件中解析 Shader 字符串](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=8)
+- [使用索引缓冲(IBO)画正方形](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=9)
+- [封装 glGetError 捕获错误](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=10)
+- [使用 uniform](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=11)
+- [vertex array 顶点数组对象(VAO)使用](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=12)
+- [oepngl 操作抽象成 class](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=13)
