@@ -33,3 +33,4 @@ https://docs.gl/
 - [抽象类-渲染器](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=16)
 - [纹理](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=17)
 - [blend 混合](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=18)
+- [glm 数学库，矫正纹理比例](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=19)
