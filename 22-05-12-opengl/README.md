@@ -16,8 +16,11 @@ https://docs.gl/
 
 # 基础概念
 
-- vertex：顶点不是一个位置，是包含顶点的所有数据，可能包含位置、纹理坐标、法线、颜色、切线等等，所有内容包含在一个顶点，这些内容都是顶点的属性。
-- stride：每个顶点包含的字节量，跳到下个顶点要偏移相应字节。
+- vertex？顶点不是一个位置，是包含顶点的所有数据，可能包含位置、纹理坐标、法线、颜色、切线等等，所有内容包含在一个顶点，这些内容都是顶点的属性。
+- stride？每个顶点包含的字节量，跳到下个顶点要偏移相应字节。
+- OpenGL ES？OpenGL for Embedded Systems，为嵌入式设备例如手机开发的 GPU 驱动标准接口
+- DirectX？微软不在 Khronos 组织中，提出了自己的 GPU 驱动标准
+- EGL？embedded Graphic Interface，OpenGL 渲染出来的内容最终要显示在屏幕上，还需要具体的窗口系统操作，EGL 是 OpenGL ES 和底层 Native 平台视窗系统之间的接口
 
 # 教程
 
@@ -34,3 +37,10 @@ https://docs.gl/
 - [纹理](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=17)
 - [blend 混合](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=18)
 - [glm 数学库，矫正纹理比例](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=19)
+- [投影矩阵、视图矩阵、模型矩阵共同决定展示位置](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=21)
+- [使用 ImGui 可视化更改画面](https://github.com/ringcrl/ChernoOpenGL)
+- [使用 ImGui 做出来的一些 demo](https://github.com/ocornut/imgui/issues/123)
+- [如何让 uniform 更快](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=27)
+- [批渲染](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=28)
+- [批渲染纹理](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=30)
+- [批渲染模式动态 vertex 更改每个纹理位置](https://www.bilibili.com/video/BV1Ni4y1o7Au?p=31)
