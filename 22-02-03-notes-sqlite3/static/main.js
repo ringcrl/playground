@@ -93,6 +93,7 @@ new Vue({
       }
     },
     updateCurrContent(index) {
+      if (this.contentList.length === 0) return;
       this.newQuestion = this.contentList[index].question;
       this.newAnswer = this.contentList[index].answer;
       this.newType = this.contentList[index].type;

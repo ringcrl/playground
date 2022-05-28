@@ -101,7 +101,7 @@
       </div>
 
       <!-- 复习 -->
-      <div v-if="mode === 'review'">
+      <div v-if="mode === 'review' && contentList.length > 0">
         <div class="box">
           <div class="block columns">
             <div class="column">
@@ -159,7 +159,7 @@
             </button>
           </div>
         </div>
-        <div class="box">
+        <div v-if="contentList.length > 0" class="box">
           <ul>
             <li
               v-for="(item, index) in contentList"
