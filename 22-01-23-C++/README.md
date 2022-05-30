@@ -1,53 +1,26 @@
-# 编译可执行文件
+# 编译运行
+
+## 1、命令行编译
 
 ```sh
-# 方法1：命令行编译
 g++ main.cpp -o main
+```
 
-# 方法2：VSCode 插件 Code Runner 直接运行，添加配置：
+## 2、VSC Code Runner
+
+```json
 "code-runner.executorMap": {
     "cpp": "cd $dir && g++ -std=c++14 *.cpp -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
 },
-
-# 方法3：VSCode Debug 运行，.vscode/task.json 配置：
-// https://code.visualstudio.com/docs/editor/tasks
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "type": "cppbuild",
-      "label": "C/C++: clang++ 生成活动文件",
-      "command": "/usr/bin/clang++",
-      "args": [
-        "-fdiagnostics-color=always",
-        "-g",
-        "-std=c++17",
-        "${fileDirname}/**.cpp",
-        "-o",
-        "${fileDirname}/${fileBasenameNoExtension}"
-      ],
-      "options": {
-        "cwd": "${fileDirname}"
-      },
-      "problemMatcher": ["$gcc"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "detail": "编译器: /usr/bin/clang++"
-    }
-  ]
-}
-
 ```
 
-# VSCode 配置
+## 3、VSC task
 
-```sh
-# 1、配置语法：输入 edit config 找到 C++ 配置，根据系统点击添加
-# 2、配置编译：顶部终端 -> 配置默认生成任务
-# 3、配置调试：顶部运行 -> 启动调试
-```
+https://code.visualstudio.com/docs/cpp/config-linux
+
+## 4、VSC CMake
+
+https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/how-to.md#create-a-new-project
 
 
 # 语法基础
