@@ -25,6 +25,12 @@ https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/how-to.md#create-
 
 # 语法基础
 
+## 查找内存地址
+
+```sh
+-exec x/16x 0x000000016fdff29c
+```
+
 ## base 基础
 
 ```cpp
@@ -129,36 +135,80 @@ int main()
 
 ```cpp
 #include <iostream>
+#include <array>
+using namespace std;
 
-int main()
-{
-    int arr[5] = {1, 2, 3, 4, 5};
-    // 数组赋值
-    arr[4] = 2;
-    // 访问数组
-    int arr2 = arr[2];
-    std::cout << arr2 << std::endl;
+int main() {
+  int arr1[5];
+
+  // 完全等价于上面，但要主动删除，没有用 new 不需要 delete
+  int *arr2 = new int[5];
+  delete[] arr2;
+
+  // 计算数组长度，初始化赋值
+  int arr1Len = sizeof(arr1) / sizeof(int);
+  for (int i = 0; i < arr1Len; i++) {
+    arr1[i] = 2;
+  }
+
+  int *ptr1 = arr1;
+  arr1[2] = 5;     // 修改第三个元素
+  *(ptr1 + 2) = 6; // 修改第三个元素
+
+  // 使用常量作为数组初始化
+  static const int arrSize = 5;
+  int arr3[arrSize];
+
+  // 使用 std::array 让数组操作更简单
+  std::array<int, 5> arr4;
+  for (int i = 0; i < arr4.size(); i++) {
+    arr4[i] = 2;
+  }
 }
 
 ```
 
-## std::string 字符串
+## char*、std::string 字符串
 
 ```cpp
 #include <iostream>
+#include <string>
+#include <stdlib.h>
+using namespace std;
 
-int main()
-{
-    std::string str1 = "hello";
-    std::string str2 = "world";
-    std::string str3;
-    int len;
-    // 赋值 str1 到 str3
-    str3 = str1;
-    // 连接 str1 和 str2
-    str3 = str1 + str2;
-    // 获取 str3 总长度
-    std::cout << "str3 length: " << str3.length() << std::endl;
+void strCopy(std::string str) {
+  str += " copy";
+  std::cout << str << std::endl;
+}
+
+void strRefer(std::string &str) {
+  str += " refer";
+  std::cout << str << std::endl;
+}
+
+int main() {
+  // C语法:
+  // 以下两种声明C的字符串的语法等价
+  const char *str1 = "Chenng";
+  char str2[6] = {'C', 'h', 'e', 'n', 'n', 'g'};
+  std::cout << str1 << std::endl;
+  std::cout << str2 << std::endl;
+
+  // C++语法:
+  std::string str3 = "Chenng";
+  std::cout << str3 << std::endl;
+  // std::string 上的方法
+  std::cout << "str3.size(): " << str3.size() << std::endl;
+  std::cout << "str3.length(): " << str3.length() << std::endl;
+  bool str3ContainsC = str3.find("C") != std::string::npos;
+  std::cout << str3ContainsC << std::endl;
+  // 字符串传入函数
+  // 复制传递
+  strCopy(str3);
+  std::cout << str3 << std::endl;
+  // 引用传递
+  strRefer(str3);
+  std::cout << str3 << std::endl;
 }
 
 ```
@@ -231,7 +281,7 @@ int main()
 
 ```
 
-## new 动态内存分配
+## new 分配内存到到 heap
 
 ```cpp
 #include <iostream>
@@ -255,9 +305,41 @@ int main()
     // 编译时
     int nums1[5];
     // 运行时
-    int* nums2 = new int[5];
+    int* nums2 = new int[5]; // 5 * 4 = 20 bytes
     cout << sizeof(nums1) << '\t' << sizeof(nums2) << endl; // 20字节 8字节
-    delete [] nums2;
+    delete[] nums2;
+}
+
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Entity {
+private:
+  std::string m_Name;
+
+public:
+  Entity() : m_Name("Unknow") {}
+  Entity(const std::string &name) : m_Name(name) {}
+
+  std::string getName() {
+    return m_Name;
+  }
+};
+
+int main() {
+  Entity* e;
+  {
+    Entity* entity = new Entity("Chenng");
+    e = entity;
+    // 等价
+    std::cout << entity->getName() << std::endl;
+    std::cout << (*entity).getName() << std::endl;
+  }
+
+  delete e;
 }
 
 ```
@@ -918,7 +1000,7 @@ int main()
 
 ```
 
-## const 用法
+## const & mutable
 
 ```cpp
 #include <iostream>
@@ -984,6 +1066,93 @@ const Computer &GetMax(const Computer &computer1, const Computer &computer2)
     {
         return computer2;
     }
+}
+
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class ConstExample {
+private:
+  int m_X;
+  int *m_Y;
+  mutable int m_var1;
+
+public:
+  // 函数不修改类内部任何东西
+  int GetX() const { return m_X; }
+
+  // 1、返回不可修改的指针 2、指针的内容不可修改
+  // 3、这个方法承诺不修改类内部任何值
+  const int *const GetY() const { return m_Y; }
+
+  // 如果类成员被标记为 m_var1，const 方法内也是可以修改的
+  int GetVar1() const {
+    m_var1++;
+    return m_var1;
+  }
+};
+
+int main() {
+  const int MAX_AGE = 100;
+
+  int *a = new int;
+  *a = 2; // 能修改内容
+  // 也能修改指针地址
+  // (int *)是因为【const int *】不能分配给【int *】，类似于 TS 类型指定
+  a = (int *)&MAX_AGE;
+  std::cout << *a << std::endl;
+
+  // 下面两行等价
+  const int *b = new int;
+  int const *c = new int;
+  // *b = 3; // 不能修改指针的内容
+  b = (int *)&MAX_AGE; // 可以修改指针的地址
+
+  // 不可修改指针地址
+  int *const d = new int;
+  *d = 4; // 可以修改指针的内容
+  // d = (int *)&MAX_AGE; // 不能就该指针的指向
+
+  // Lambuda 表达式中的 mutable
+  int x = 8;
+  auto f = [=]() mutable
+  {
+    x++;
+    std::cout << x << std::endl;
+  };
+  f();
+}
+
+```
+
+## constructor 初始化参数
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Entity {
+private:
+  std::string m_Name;
+
+public:
+  Entity() : m_Name("Unknow") {}
+  Entity(const std::string &name) : m_Name(name) {}
+
+  std::string getName() {
+    return m_Name;
+  }
+};
+
+int main() {
+  Entity e1;
+  Entity e2("Chenng");
+
+  std::cout << e1.getName() << std::endl;
+  std::cout << e2.getName() << std::endl;
 }
 
 ```
