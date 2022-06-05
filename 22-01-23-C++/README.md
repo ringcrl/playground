@@ -1157,6 +1157,121 @@ int main() {
 
 ```
 
+## operator 修改操作符
+
+```cpp
+#include <iostream>
+using namespace std;
+
+struct Vector2 {
+  float x, y;
+
+  Vector2(float x, float y) : x(x), y(y) {}
+
+  Vector2 Add(const Vector2 &other) const {
+    return Vector2(x + other.x, y + other.y);
+  }
+
+  Vector2 operator+(const Vector2 &other) const { return Add(other); }
+
+  bool operator==(const Vector2 &other) const {
+    return other.x == x && other.y == y;
+  }
+};
+
+int main() {
+  Vector2 position(0.5f, 0.6f);
+  Vector2 speed(0.3f, 0.3f);
+
+  // 主动调用
+  Vector2 res1 = position.Add(speed);
+  std::cout << res1.x << std::endl;
+  // 通过 operator+ 调用
+  Vector2 res2  = position + speed;
+  std::cout << res2.x << std::endl;
+  
+  // 通过 operator== 调用
+  bool isEqual = position == speed;
+  std::cout << isEqual << std::endl;
+}
+
+```
+
+## this 用法
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Entity {
+public:
+  int x, y;
+  // 参数名字和类成员一模一样，不能使用 x = x，引入 this
+  Entity(int x, int y) {
+    this->x = x;
+    this->y = y;
+
+    // 也可以换个写法
+    // (*this).x = x;
+    // (*this).y = y;
+  }
+};
+
+int main() {
+  Entity e(1, 2);
+  std::cout << e.x << std::endl;
+}
+
+```
+
+## SMART POINTERS: std::unique_ptr, std::shared_ptr, std::weak_ptr
+
+```cpp
+#include <iostream>
+#include <memory>
+
+// SMART POINTERS: std::unique_ptr, std::shared_ptr, std::weak_ptr
+
+class Entity {
+private:
+  std::string m_Type;
+
+public:
+  Entity(const std::string &type) : m_Type(type) {
+    std::cout << "Created Entity " << m_Type << std::endl;
+  }
+
+  ~Entity() { std::cout << "Destroyed Entity " << m_Type << std::endl; }
+
+  void Print() { std::cout << "Print " << m_Type << std::endl; }
+};
+
+int main() {
+  // 使用了 new 但是超出作用域后会自动析构
+
+  std::shared_ptr<Entity> sharedEntity1;
+
+  std::weak_ptr<Entity> weakEntity1;
+
+  {
+    // std::unique_ptr 两种初始化方法
+    std::unique_ptr<Entity> uniqueEntity1(new Entity("unique"));
+    uniqueEntity1->Print();
+    std::unique_ptr<Entity> uniqueEntity2 = std::make_unique<Entity>("unique");
+    uniqueEntity2->Print();
+
+    // std::shated_ptr
+    std::shared_ptr<Entity> sharedEntity2 = std::make_shared<Entity>("shared");
+    sharedEntity1 = sharedEntity2;
+    sharedEntity1->Print();
+
+    // std::weak_ptr，不会增加引用计数
+    weakEntity1 = sharedEntity2;
+  }
+}
+
+```
+
 # 应用
 
 ## 获取文件路径
