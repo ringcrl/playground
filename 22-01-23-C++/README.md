@@ -964,38 +964,41 @@ public:
 }
 ```
 
-## vector 数组代替品
+## vector 动态数组
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
-using namespace std;
 
-int main()
-{
-    vector<double> vecDouble = {1.0, 2.0, 3.0, 4.0, 5.0};
+int main() {
+  std::vector<double> vecDouble = {1.0, 2.0, 3.0, 4.0, 5.0};
 
-    // 向数组插入数字
-    vecDouble.push_back(6.0);
+  // 向数组插入数字
+  vecDouble.push_back(6.0);
 
-    // 遍历所有元素
-    for (int i = 0; i < vecDouble.size(); i++) {
-        cout << "vecDouble[" << i << "] = " << vecDouble[i] << endl;
-    }
+  // 遍历方法1：
+  for (int i = 0; i < vecDouble.size(); i++) {
+    std::cout << vecDouble[i] << std::endl;
+  }
 
-    // 得到迭代器对象
-    vector<double>::iterator it;
-    // 从第一个元素开始迭代
-    // ++ 写在前面避免缓存，写在后面会产生缓存问题
-    for (it = vecDouble.begin(); it != vecDouble.end(); ++it) {
-        cout << "*it = " << *it << endl;
-    }
+  // 遍历方法2：
+  for (const double &v : vecDouble) {
+    std::cout << v << std::endl;
+  }
 
-    // 正序排序
-    sort(vecDouble.begin(), vecDouble.end());
-    // 逆序排序
-    reverse(vecDouble.begin(), vecDouble.end());
+  // 得到迭代器对象
+  std::vector<double>::iterator it;
+  // 从第一个元素开始迭代
+  // ++ 写在前面避免缓存，写在后面会产生缓存问题
+  for (it = vecDouble.begin(); it != vecDouble.end(); ++it) {
+    std::cout << "*it = " << *it << std::endl;
+  }
+
+  // 正序排序
+  sort(vecDouble.begin(), vecDouble.end());
+  // 逆序排序
+  reverse(vecDouble.begin(), vecDouble.end());
 }
 
 ```
@@ -1268,6 +1271,68 @@ int main() {
     // std::weak_ptr，不会增加引用计数
     weakEntity1 = sharedEntity2;
   }
+}
+
+```
+
+## memcpy 复制传递与地址传递
+
+```cpp
+#include <iostream>
+#include <memory>
+
+struct Vector2 {
+  float x, y;
+};
+
+class String {
+private:
+  char *m_Buffer;
+  unsigned int m_Size;
+
+public:
+  String(const char *string) {
+    m_Size = strlen(string);
+    m_Buffer = new char[m_Size];
+    memcpy(m_Buffer, string, m_Size);
+  }
+
+  friend std::ostream &operator<<(std::ostream &stream, const String &string);
+
+  ~String() { delete[] m_Buffer; }
+
+  // 禁止使用 constructor copy
+  // String str2 = str1;
+  // String(const String &ohter) = delete;
+
+  // deep copy
+  String(const String &other) : m_Size(other.m_Size) {
+    m_Buffer = new char[m_Size];
+    memcpy(m_Buffer, other.m_Buffer, m_Size);
+  }
+};
+
+std::ostream &operator<<(std::ostream &stream, const String &string) {
+  stream << string.m_Buffer;
+  return stream;
+}
+
+int main() {
+  // 复制传递，修改 b 不会影响 a
+  Vector2 a = {2, 3};
+  Vector2 b = a;
+  b.x = 5;
+  std::cout << a.x << std::endl;
+
+  // 地址传递
+  Vector2 *c = new Vector2();
+  Vector2 *d = c;
+  d->x = 5;
+  std::cout << c->x << std::endl;
+
+  String str1 = "Chenng";
+  String str2 = str1;
+  std::cout << str1 << std::endl;
 }
 
 ```
