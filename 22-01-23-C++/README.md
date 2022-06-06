@@ -971,6 +971,16 @@ public:
 #include <iostream>
 #include <vector>
 
+struct Vertex {
+  float x, y, z;
+
+  Vertex(float x, float y, float z) : x(x), y(y), z(z) {}
+
+  Vertex(const Vertex &vertext) : x(vertext.x), y(vertext.y), z(vertext.z) {
+    std::cout << "copied" << std::endl;
+  }
+};
+
 int main() {
   std::vector<double> vecDouble = {1.0, 2.0, 3.0, 4.0, 5.0};
 
@@ -999,6 +1009,20 @@ int main() {
   sort(vecDouble.begin(), vecDouble.end());
   // 逆序排序
   reverse(vecDouble.begin(), vecDouble.end());
+
+  // 优化内存不足情况下多次开辟新内存
+  // 下面写法会调用 copied 三次
+  std::vector<Vertex> vertices1;
+  vertices1.push_back({1, 2, 3});
+  vertices1.push_back({4, 5, 6});
+  vertices1.push_back({7, 8, 9});
+  std::cout << "==========" << std::endl;
+  // 下面写法会优化 copied 次数，有足够的内存存储新 push_back 的内容
+  std::vector<Vertex> vertices2;
+  vertices2.reserve(3); // 申请三份内存
+  vertices2.push_back({1, 2, 3});
+  vertices2.push_back({4, 5, 6});
+  vertices2.push_back({7, 8, 9});
 }
 
 ```
@@ -1333,6 +1357,38 @@ int main() {
   String str1 = "Chenng";
   String str2 = str1;
   std::cout << str1 << std::endl;
+}
+
+```
+
+## local static 静态变量
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+void Func() {
+  static int i = 0; // 全局变量，等价于把 int i 移动到函数外面
+  i++;
+  std::cout << i << std::endl;
+}
+
+class Singleton {
+public:
+  static Singleton &Get() {
+    static Singleton instance;
+    return instance;
+  }
+  void Hello() { std::cout << "Hello" << std::endl; }
+};
+
+int main() {
+  for (int i = 0; i < 5; i++) {
+    Func();
+  }
+
+  Singleton::Get().Hello();
 }
 
 ```
