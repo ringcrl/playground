@@ -1393,6 +1393,39 @@ int main() {
 
 ```
 
+## tuple 或 struct 函数多数据返回
+
+```cpp
+#include <iostream>
+
+std::tuple<std::string, std::string> FunctionWithTupleReturn() {
+  std::string string1 = "string1";
+  std::string string2 = "string2";
+
+  return std::make_pair(string1, string2);
+}
+
+struct StructReturnValue {
+  std::string key1;
+  std::string key2;
+};
+StructReturnValue FunctionWithStructReturn() {
+  std::string string1 = "string1";
+  std::string string2 = "string2";
+  return { string1, string2 };
+}
+
+int main() {
+  auto tupleReturn = FunctionWithTupleReturn();
+  std::string value0 = std::get<0>(tupleReturn);
+  std::cout << value0 << std::endl;
+
+  auto structReturn = FunctionWithStructReturn();
+  std::cout << structReturn.key2 << std::endl;
+}
+
+```
+
 # 应用
 
 ## 获取文件路径
