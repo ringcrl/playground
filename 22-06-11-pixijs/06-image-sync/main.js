@@ -1,5 +1,9 @@
 const app = new PIXI.Application({
-  width: 800, height: 600, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1, autoStart: false, // 禁用定时器自动render
+  width: 800,
+  height: 600,
+  backgroundColor: 0x1099bb,
+  resolution: window.devicePixelRatio || 1,
+  autoStart: false, // 禁用定时器自动render
 });
 document.body.appendChild(app.view);
 
