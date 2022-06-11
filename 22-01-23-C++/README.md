@@ -1426,6 +1426,36 @@ int main() {
 
 ```
 
+## template
+
+```cpp
+#include <iostream>
+#include <string>
+
+// 不用写三个类型重载函数
+template <typename T> void Print(T value) { std::cout << value << std::endl; }
+
+template <typename T, int N> class Array {
+private:
+  T m_data[N];
+
+public:
+  int GetSize() const { return N; }
+};
+
+int main() {
+  Print(5);
+  Print("Hello");
+  Print(5.5f);
+
+  Array<int, 5> int_arr;
+  std::cout << int_arr.GetSize() << std::endl;
+  Array<std::string, 10> str_arr;
+  std::cout << str_arr.GetSize() << std::endl;
+}
+
+```
+
 # 应用
 
 ## 获取文件路径
