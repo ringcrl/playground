@@ -526,9 +526,20 @@ int main()
 ### auto 自动推断
 
 ```cpp
-// C++ 11 开始支持 auto
-// auto 必须赋值初始函数
-auto ptrCalc = addition;
+#include <iostream>
+#include <string>
+
+std::string GetName() {
+  return "Chenng";
+}
+
+int main() {
+  // C++ 11 开始支持 auto
+  // auto 必须赋值初始函数
+  auto name = GetName();
+  std::cout << name.size() << std::endl;
+}
+
 ```
 
 ### 内联函数
@@ -1452,6 +1463,25 @@ int main() {
   std::cout << int_arr.GetSize() << std::endl;
   Array<std::string, 10> str_arr;
   std::cout << str_arr.GetSize() << std::endl;
+}
+
+```
+
+## macros 定义宏
+
+```cpp
+#include <iostream>
+#include <string>
+
+// 定义宏
+#ifndef NDEBUG
+#define LOG(x) std::cout << x << std::endl
+#else
+#define LOG(x)
+#endif
+
+int main() {
+  LOG("Hello, World!");
 }
 
 ```
