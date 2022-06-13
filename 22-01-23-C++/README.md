@@ -1486,6 +1486,27 @@ int main() {
 
 ```
 
+## lambda 表达式
+
+```cpp
+#include <iostream>
+#include <vector>
+
+void ForEach(const std::vector<int> &values, void (*func)(int)) {
+  for (int value : values) {
+    func(value);
+  }
+}
+
+int main() {
+  std::vector<int> values = {1, 2, 3, 4, 5};
+  // https://en.cppreference.com/w/cpp/language/lambda
+  auto lambda = [](int value) { std::cout << value << std::endl; };
+  ForEach(values, lambda);
+}
+
+```
+
 # 应用
 
 ## 获取文件路径
