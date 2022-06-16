@@ -1507,6 +1507,88 @@ int main() {
 
 ```
 
+## Threads 多线程
+
+```cpp
+#include <iostream>
+#include <thread>
+
+static bool s_Finished = false;
+
+void DoWork() {
+  using namespace std::literals::chrono_literals;
+
+  std::cout << "Started thread id=" << std::this_thread::get_id() << std::endl;
+
+  while (!s_Finished) {
+    std::cout << "Doing work..." << std::endl;
+    std::this_thread::sleep_for(1s);
+  }
+}
+
+int main() {
+  std::thread worker(DoWork);
+
+  std::cin.get();
+
+  s_Finished = true;
+
+  worker.join();
+
+  std::cout << "Finished" << std::endl;
+  std::cout << "Started thread id=" << std::this_thread::get_id() << std::endl;
+
+  std::cin.get();
+}
+
+```
+
+## Timing 计时器
+
+```cpp
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+// 封装快捷记录函数时间的方法
+struct Timer {
+  std::chrono::time_point<std::chrono::steady_clock> start, end;
+  std::chrono::duration<float> duration;
+
+  Timer() {
+    start = std::chrono::high_resolution_clock::now();
+  }
+
+  ~Timer() {
+    end = std::chrono::high_resolution_clock::now();
+    duration = end - start;
+
+    float ms = duration.count() * 1000.0f;
+    std::cout << "Time: " << ms << "ms" << std::endl;
+  }
+};
+
+void Print() {
+  Timer timer;
+  for (int i = 0; i < 100; i++) {
+    std::cout << "Hello" << std::endl;
+  }
+}
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    // std::this_thread::sleep_for(std::chrono::seconds(1));
+    Print();
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
+    std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us" << std::endl;
+}
+
+```
+
 # 应用
 
 ## 获取文件路径
