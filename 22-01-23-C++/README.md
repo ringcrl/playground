@@ -28,7 +28,9 @@ https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/how-to.md#create-
 ## 查找内存地址
 
 ```sh
--exec x/16x 0x000000016fdff29c
+# -exec x &var
+
+-exec x/16x &var
 ```
 
 ## base 基础
@@ -1585,6 +1587,85 @@ int main() {
 
     std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
     std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us" << std::endl;
+}
+
+```
+
+## 2d array 二维数组
+
+```cpp
+#include <iostream>
+
+int main() {
+  int **array2d = new int *[3];
+  for (int i = 0; i < 3; i++) {
+    array2d[i] = new int[3];
+  }
+
+  array2d[0][0] = 1;
+
+  std::cout << array2d[0][0] << std::endl;
+
+  // release memory
+  for (int i = 0; i < 3; i++) {
+    delete[] array2d[i];
+  }
+}
+
+```
+
+## sorting 排序
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <functional>
+
+int main() {
+  std::vector<int> values = {1, 5, 3, 4, 2};
+
+  // 从小到大排序
+  std::sort(values.begin(), values.end());
+  for(auto value : values) {
+    std::cout << value << " ";
+  }
+
+  std::cout << std::endl;
+
+  // 从大到小排序
+  std::sort(values.begin(), values.end(), std::greater<int>());
+  for(auto value : values) {
+    std::cout << value << " ";
+  }
+
+  std::cout << std::endl;
+
+  // 迭代器排序
+  std::sort(values.begin(), values.end(), [](int a, int b) {
+    return a < b;
+  });
+  for(auto value : values) {
+    std::cout << value << " ";
+  }
+}
+
+```
+
+## type punning 类型转换
+
+```cpp
+#include <iostream>
+
+int main() {
+  int a = 5;
+  float b = (float)a;
+
+  // -exec x &a
+  // -exec x &b
+  // a 和 b 的地址不一样
+
+  std::cout << b << std::endl;  
 }
 
 ```

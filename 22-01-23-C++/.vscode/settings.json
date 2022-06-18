@@ -66,5 +66,6 @@
     "functional": "cpp",
     "iterator": "cpp",
     "utility": "cpp"
-  }
+  },
+  "cortex-debug.showRTOS": true
 }
