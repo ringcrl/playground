@@ -29,10 +29,12 @@ const a8 = 0.3;
 assert.deepEqual(isDivisibleBy(a7, a8), true);
 
 function getFrameAlign(frameRage, startTime) {
+  // 会丢失精度
+  // return Number.isInteger(startTime / (1000 / frameRage));
+
   const msPerFrame = 1000 / frameRage;
   const gtValue = Math.ceil(startTime / msPerFrame);
   const quotient = startTime / msPerFrame;
-
   return isDivisibleBy(gtValue, quotient);
 }
 
