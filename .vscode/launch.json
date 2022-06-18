@@ -21,7 +21,7 @@
       "program": "${file}",
       "cwd": "${workspaceFolder}",
       "outputCapture": "std",
-      "runtimeExecutable": "/Users/ringcrl/.nvm/versions/node/v14.17.3/bin/node"
+      "runtimeExecutable": "node"
     },
     {
       "name": "TS",
