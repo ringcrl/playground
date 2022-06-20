@@ -1734,3 +1734,56 @@ int main()
         mkdir(prefix.c_str(), S_IRWXU);  // 则创建
 }
 ```
+
+## 测试计算机运算速度
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+// O(n)
+void function1(long long n) {
+  long long k = 0;
+  for (long long i = 0; i < n; i++) {
+    k++;
+  }
+}
+
+// O(n^2)
+void function2(long long n) {
+  long long k = 0;
+  for (long long i = 0; i < n; i++) {
+    for (long j = 0; j < n; j++) {
+      k++;
+    }
+  }
+}
+
+// O(nlongn)
+void function3(long long n) {
+  long long k = 0;
+  for (long long i = 0; i < n; i++) {
+    for (long long j = 0; j < n; j = j * 2) {
+      k++;
+    }
+  }
+}
+
+int main() {
+  long long n = 1000000000; // 数据规模
+  std::chrono::milliseconds start_time =
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::system_clock::now().time_since_epoch());
+  function1(n);
+  //        function2(n);
+  //        function3(n);
+  std::chrono::milliseconds end_time =
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::system_clock::now().time_since_epoch());
+  std::cout << "耗时:"
+            << std::chrono::milliseconds(end_time).count() -
+                   std::chrono::milliseconds(start_time).count()
+            << " ms" << std::endl;
+}
+
+```
