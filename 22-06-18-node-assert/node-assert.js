@@ -52,7 +52,9 @@ assert.deepEqual(getFrameAlign(60, 1500), true);
 
 function getSegmentStartTime(itemStartTime, itemSection, startTime) {
   let currTime = itemSection?.start || 0
-  currTime += (startTime - itemStartTime)
+  if (startTime - itemStartTime > 0) {
+    currTime += (startTime - itemStartTime)
+  }
   if (currTime < 0) currTime = 0
   return currTime
 }
@@ -63,3 +65,4 @@ assert.deepEqual(getSegmentStartTime(1000, {start: 0, end: 2000}, 0), 0);
 assert.deepEqual(getSegmentStartTime(1000, {start: 1000, end: 2000}, 1000), 1000);
 assert.deepEqual(getSegmentStartTime(1000, {start: 1000, end: 2000}, 1500), 1500);
 assert.deepEqual(getSegmentStartTime(1000, undefined, 1500), 500);
+assert.deepEqual(getSegmentStartTime(1000, {start: 1000, end: 2000}, 500), 1000);
