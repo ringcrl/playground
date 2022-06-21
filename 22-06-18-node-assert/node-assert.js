@@ -50,19 +50,44 @@ assert.deepEqual(getFrameAlign(60, 1000), true);
 assert.deepEqual(getFrameAlign(60, 1001), false);
 assert.deepEqual(getFrameAlign(60, 1500), true);
 
-function getSegmentStartTime(itemStartTime, itemSection, startTime) {
-  let currTime = itemSection?.start || 0
-  if (startTime - itemStartTime > 0) {
-    currTime += (startTime - itemStartTime)
+function getSegmentStartTime(opts) {
+  const {
+    itemStartTime, itemSection, itemDuration, startTime,
+  } = opts;
+  let currTime = itemSection?.from || 0;
+  const playRate = itemSection
+    ? (itemSection.to - itemSection.from) / itemDuration
+    : 1;
+  const diffTime = (startTime - itemStartTime) * playRate;
+  if (diffTime > 0) {
+    currTime += diffTime;
   }
-  if (currTime < 0) currTime = 0
-  return currTime
+  return currTime;
 }
-assert.deepEqual(getSegmentStartTime(0, {start: 0, end: 2000}, 0), 0);
-assert.deepEqual(getSegmentStartTime(0, {start: 0, end: 2000}, 1000), 1000);
-assert.deepEqual(getSegmentStartTime(0, {start: 0, end: 2000}, 2000), 2000);
-assert.deepEqual(getSegmentStartTime(1000, {start: 0, end: 2000}, 0), 0);
-assert.deepEqual(getSegmentStartTime(1000, {start: 1000, end: 2000}, 1000), 1000);
-assert.deepEqual(getSegmentStartTime(1000, {start: 1000, end: 2000}, 1500), 1500);
-assert.deepEqual(getSegmentStartTime(1000, undefined, 1500), 500);
-assert.deepEqual(getSegmentStartTime(1000, {start: 1000, end: 2000}, 500), 1000);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 0, itemSection: { from: 0, to: 2000 }, itemDuration: 2000, startTime: 0,
+}), 0);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 0, itemSection: { from: 0, to: 2000 }, itemDuration: 2000, startTime: 1000,
+}), 1000);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 0, itemSection: { from: 0, to: 2000 }, itemDuration: 2000, startTime: 2000,
+}), 2000);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 1000, itemSection: { from: 0, to: 2000 }, itemDuration: 2000, startTime: 0,
+}), 0);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 1000, itemSection: { from: 1000, to: 2000 }, itemDuration: 1000, startTime: 1000,
+}), 1000);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 1000, itemSection: { from: 1000, to: 2000 }, itemDuration: 1000, startTime: 1500,
+}), 1500);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 1000, itemSection: undefined, itemDuration: 2000, startTime: 1500,
+}), 500);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 1000, itemSection: { from: 1000, to: 2000 }, itemDuration: 1000, startTime: 500,
+}), 1000);
+assert.deepEqual(getSegmentStartTime({
+  itemStartTime: 0, itemSection: { from: 0, to: 2000 }, itemDuration: 8000, startTime: 500,
+}), 125);
