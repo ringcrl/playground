@@ -1,12 +1,12 @@
-const fs = require('fs');
+const fs = require('fs')
 
-console.log('服务已初始化');
+console.log('服务已初始化')
 
-const tmpArgvList = fs.readFileSync('/tmp/node_start_fifo');
-console.log('参数：', tmpArgvList);
+const tmpArgvList = fs.readFileSync('/tmp/node_start_fifo')
+console.log('参数：', tmpArgvList)
 
-console.log('服务已启动');
+console.log('服务已启动')
 
-fs.writeFileSync('/tmp/node_finish_fifo', 'finish');
+fs.writeFileSync('/tmp/node_finish_fifo', 'finish')
 
-console.log('服务已退出');
+console.log('服务已退出')

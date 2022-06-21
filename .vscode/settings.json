@@ -82,4 +82,6 @@
   "liveServer.settings.port": 5502,
   "python.linting.pylintEnabled": true,
   "python.linting.enabled": true,
+  "standard.autoFixOnSave": true,
+  "standard.nodePath": "/Users/ringcrl/.nvm/versions/node/v16.15.1/bin/node",
 }
