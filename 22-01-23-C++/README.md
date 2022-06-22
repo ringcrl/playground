@@ -1670,6 +1670,36 @@ int main() {
 
 ```
 
+## dynamic_cast
+
+```cpp
+#include <iostream>
+
+class Entity {
+public:
+  virtual void printName() {}
+};
+
+class Player : public Entity {};
+
+class Enemy : public Entity {};
+
+int main() {
+
+  Player *player = new Player();
+  Enemy *enemy = new Enemy();
+
+  Player *p0 = dynamic_cast<Player *>(player);
+  if (p0) {
+    // 类似于 JS 的 player instanceof Player
+  }
+  // enemy instanceof Player
+  if (dynamic_cast<Player *>(enemy)) {
+  }
+}
+
+```
+
 # 应用
 
 ## 获取文件路径
