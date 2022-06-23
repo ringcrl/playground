@@ -1439,6 +1439,53 @@ int main() {
 
 ```
 
+## tuple structured bindings
+
+```cpp
+#include <iostream>
+#include <tuple>
+
+std::tuple<std::string, int> CreatePerson() {
+  return {"Chenng", 29};
+}
+
+int main() {
+  // C++17 支持的特性，干净整洁明了的使用 tuple
+  auto[name, age] = CreatePerson();
+  std::cout << name << " " << age << std::endl;
+}
+
+```
+
+## std::optional Deal with OPTIONAL Data 
+
+```cpp
+#include <iostream>
+#include <optional>
+#include <fstream>
+
+std::optional<std::string> ReadFileAsString(const std::string& file_path) {
+  std::ifstream file(file_path);
+  if (!file.is_open()) {
+    return std::nullopt;
+  }
+  std::string content((std::istreambuf_iterator<char>(file)),
+                      (std::istreambuf_iterator<char>()));
+  return content;
+};
+
+int main() {
+  std::optional<std::string> content = ReadFileAsString("compile_commands.json");
+  // 这里可以直接判断
+  if (content) {
+    std::cout << *content << std::endl;
+  } else {
+    std::cout << "File not found" << std::endl;
+  }
+}
+
+```
+
 ## template
 
 ```cpp
